@@ -1,10 +1,11 @@
 package com.io.toui.test;
 
-import com.io.toui.model.*;
 import com.io.toui.model.ICommands.*;
+import com.io.toui.model.*;
+import com.io.toui.test.websocket.WebsocketClientTransporter;
 
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,19 +21,25 @@ public class TOUIClientTest implements Add, Remove, Update {
         try {
             final TOUIClientTest test = new TOUIClientTest();
 
-            while (true) {
-
-                try {
-                    Thread.sleep(5000);
-
-                    test.updateValue();
-                }
-                catch (final InterruptedException _e) {
-                    break;
-                }
-            }
+//            while (true) {
+//
+//                try {
+//                    Thread.sleep(5000);
+//
+////                    test.updateValue();
+//                }
+//                catch (final InterruptedException _e) {
+//                    break;
+//                }
+//            }
         }
-        catch (SocketException | UnknownHostException _e) {
+        catch (final IOException _e) {
+            _e.printStackTrace();
+        }
+        catch (URISyntaxException _e) {
+            _e.printStackTrace();
+        }
+        catch (InterruptedException _e) {
             _e.printStackTrace();
         }
 
@@ -41,20 +48,24 @@ public class TOUIClientTest implements Add, Remove, Update {
 
     //------------------------------------------------------------
     //
-    private final TOUI toui;
+    private final TOUIClient toui;
 
     private final Map<String, ValueDescription<?>> values = new HashMap<>();
 
     //------------------------------------------------------------
     //
-    public TOUIClientTest() throws SocketException, UnknownHostException {
+    public TOUIClientTest() throws IOException, URISyntaxException, InterruptedException {
 
         // create serializer and transporter
         final JsonSerializer       serializer  = new JsonSerializer();
-        final UDPClientTransporter transporter = new UDPClientTransporter("localhost", 8888);
+//        final UDPClientTransporter transporter = new UDPClientTransporter("localhost", 8888);
+//        final TCPClientTransporter transporter = new TCPClientTransporter("localhost", 8888);
+        final WebsocketClientTransporter transporter = new WebsocketClientTransporter
+                ("localhost", 8888);
+
 
         // create toui
-        toui = new TOUI(serializer, transporter);
+        toui = new TOUIClient(serializer, transporter);
         toui.setUpdateListener(this);
         toui.setAddListener(this);
         toui.setRemoveListener(this);

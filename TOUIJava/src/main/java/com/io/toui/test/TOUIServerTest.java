@@ -1,8 +1,11 @@
 package com.io.toui.test;
 
-import com.io.toui.model.*;
 import com.io.toui.model.ICommands.Update;
+import com.io.toui.model.*;
+import com.io.toui.test.tcp.TCPServerTransporter;
+import com.io.toui.test.websocket.WebsocketServerTransporter;
 
+import java.io.IOException;
 import java.net.SocketException;
 
 /**
@@ -36,7 +39,9 @@ public class TOUIServerTest implements Update {
         catch (final SocketException _e) {
             _e.printStackTrace();
         }
-
+        catch (final IOException _e) {
+            _e.printStackTrace();
+        }
 
         System.out.println("finish server");
     }
@@ -44,7 +49,7 @@ public class TOUIServerTest implements Update {
 
     //------------------------------------------------------------
     //
-    private final TOUI toui;
+    private final TOUIServer toui;
 
     private final ValueDescription<Long> theValue;
 
@@ -52,14 +57,17 @@ public class TOUIServerTest implements Update {
 
     //------------------------------------------------------------
     //
-    public TOUIServerTest() throws SocketException {
+    public TOUIServerTest() throws IOException {
 
         // create serializer and transporter
         final JsonSerializer serializer = new JsonSerializer();
-        final UDPServerTransporter transporter = new UDPServerTransporter(8888);
+
+//        final UDPServerTransporter transporter = new UDPServerTransporter(8888);
+//        final TCPServerTransporter transporter = new TCPServerTransporter(8888);
+        final WebsocketServerTransporter transporter = new WebsocketServerTransporter(8888);
 
         // create toui
-        toui = new TOUI(serializer, transporter);
+        toui = new TOUIServer(serializer, transporter);
         toui.setUpdateListener(this);
 
         // create values
@@ -96,5 +104,4 @@ public class TOUIServerTest implements Update {
         // update all clients
         toui.update(_value);
     }
-
 }
