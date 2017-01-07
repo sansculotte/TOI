@@ -73,7 +73,7 @@ public abstract class TOUIBase implements ITransporterListener {
             // get cached value
             final ValueDescription<?> desc = valueCache.get(_value.id);
 
-            // TODO: update cached value
+            desc.update(_value);
         }
         else {
             System.out.println("value not in cache - ignore");
@@ -82,8 +82,16 @@ public abstract class TOUIBase implements ITransporterListener {
         if (transporter != null) {
 
             // transport value
-            final Packet packet = new Packet(ICommands.UPDATE, _value, 0, null);
+            final Packet packet = new Packet(ICommands.UPDATE, _value, 0L, null);
             transporter.send(serializer.serialize(packet));
         }
+    }
+
+    public void dumpCache() {
+        valueCache.forEach((_s, _valueDescription) -> {
+            System.out.println("------");
+            _valueDescription.dump();
+            System.out.println();
+        });
     }
 }
