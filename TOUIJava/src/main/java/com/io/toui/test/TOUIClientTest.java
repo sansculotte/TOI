@@ -21,17 +21,17 @@ public class TOUIClientTest implements Add, Remove, Update {
         try {
             final TOUIClientTest test = new TOUIClientTest();
 
-//            while (true) {
-//
-//                try {
-//                    Thread.sleep(5000);
-//
-////                    test.updateValue();
-//                }
-//                catch (final InterruptedException _e) {
-//                    break;
-//                }
-//            }
+            while (true) {
+
+                try {
+                    Thread.sleep(5000);
+
+                    test.updateValue();
+                }
+                catch (final InterruptedException _e) {
+                    break;
+                }
+            }
         }
         catch (final IOException _e) {
             _e.printStackTrace();
@@ -74,11 +74,26 @@ public class TOUIClientTest implements Add, Remove, Update {
         toui.init();
     }
 
+    int count;
+
     public void updateValue() {
 
         if (!values.isEmpty()) {
 
-            final ValueDescription<?> val = values.get(values.keySet().toArray()[0]);
+            Object[] objs = values.keySet().toArray();
+
+            final ValueDescription<?> val = values.get(objs[objs.length - 1]);
+
+            if (val.type.equals(ValueTypes.STRING)) {
+                ((ValueDescription<String>)val).value += "-";
+            }
+            else if (val.type.equals(ValueTypes.NUMBER)) {
+                ((ValueDescription<Number>)val).value = count++;
+            }
+
+            System.out.println("---- update: ");
+            val.dump();
+            System.out.println();
 
             toui.update(val.cloneEmpty());
 
@@ -99,6 +114,8 @@ public class TOUIClientTest implements Add, Remove, Update {
         else {
             System.err.println("client: udpate: client does not know value with id: " + _value.id);
         }
+
+        toui.dumpCache();
     }
 
     @Override
@@ -111,6 +128,8 @@ public class TOUIClientTest implements Add, Remove, Update {
         else {
             System.err.println("client: add: already has value with id: " + _value.id);
         }
+
+        toui.dumpCache();
     }
 
     @Override

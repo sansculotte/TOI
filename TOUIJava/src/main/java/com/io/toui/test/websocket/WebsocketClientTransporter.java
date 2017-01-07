@@ -47,6 +47,8 @@ public class WebsocketClientTransporter extends WebSocketClient implements ITran
 
     @Override
     public void onMessage(final String message) {
+
+        System.out.println("received: " + message);
         received(message.getBytes());
     }
 

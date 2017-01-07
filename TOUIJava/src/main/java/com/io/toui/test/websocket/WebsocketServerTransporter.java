@@ -3,7 +3,6 @@ package com.io.toui.test.websocket;
 import com.io.toui.model.ITransporter;
 import com.io.toui.model.ITransporterListener;
 import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
@@ -58,12 +57,14 @@ public class WebsocketServerTransporter extends WebSocketServer implements ITran
 
     @Override
     public void onMessage(final WebSocket _socket, final String _message) {
+
+        System.out.println("received: " + _message);
         received(_message.getBytes());
     }
 
     @Override
     public void onMessage(final WebSocket conn, final ByteBuffer message) {
-        System.out.println("reeived bytes");
+        System.out.println("received bytes: ");
         received(message.array());
     }
 
@@ -85,11 +86,15 @@ public class WebsocketServerTransporter extends WebSocketServer implements ITran
         }
 
         if (clients.isEmpty()) {
-            System.err.println("no clients");
+//            System.err.println("no clients");
             return;
         }
 
-        clients.forEach(_webSocket -> _webSocket.send(new String(_data)));
+        clients.forEach(_webSocket -> {
+            System.out.println("sending to: " + _webSocket.getRemoteSocketAddress().getHostString
+                    () + ":" + _webSocket.getRemoteSocketAddress().getPort());
+            _webSocket.send(new String(_data));
+        });
     }
 
     @Override

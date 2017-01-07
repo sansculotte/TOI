@@ -2,7 +2,6 @@ package com.io.toui.test;
 
 import com.io.toui.model.ICommands.Update;
 import com.io.toui.model.*;
-import com.io.toui.test.tcp.TCPServerTransporter;
 import com.io.toui.test.websocket.WebsocketServerTransporter;
 
 import java.io.IOException;
@@ -23,13 +22,18 @@ public class TOUIServerTest implements Update {
             while (true) {
 
                 try {
-                    Thread.sleep(3000);
+//                    Thread.sleep(3000);
+//
+//                    test.updateVar1();
+//
+//                    Thread.sleep(2000);
+//
+//                    test.updateVar2();
 
-                    test.updateVar1();
+                    Thread.sleep(10000);
 
-                    Thread.sleep(2000);
+                    test.dumpCache();
 
-                    test.updateVar2();
                 }
                 catch (final InterruptedException _e) {
                     break;
@@ -51,9 +55,15 @@ public class TOUIServerTest implements Update {
     //
     private final TOUIServer toui;
 
-    private final ValueDescription<Long> theValue;
+    private final ValueDescription<Long> theValueLong;
 
-    private final ValueDescription<String> theValue1;
+    private final ValueDescription<String> theValueString;
+
+    private final ValueDescription<Double> theValueDouble;
+
+    private final ValueDescription<Integer> theValueInt;
+
+    private int counter = 0;
 
     //------------------------------------------------------------
     //
@@ -71,25 +81,43 @@ public class TOUIServerTest implements Update {
         toui.setUpdateListener(this);
 
         // create values
-        theValue = new ValueDescription<>("1", ValueTypes.NUMBER);
-        theValue.value = 123L;
-        theValue.description = "test description";
+        theValueLong = new ValueDescription<>("1", ValueTypes.NUMBER);
+        theValueLong.value = 123L;
+        theValueLong.description = "long";
 
-        theValue1 = new ValueDescription<>("2", ValueTypes.STRING);
-        theValue1.value = "test content";
-        theValue1.description = "test description 2";
+        theValueString = new ValueDescription<>("2", ValueTypes.STRING);
+        theValueString.value = "oi. jep updates kommen. jeder char einzeln?? oder hast du " +
+                               "tatsächlich nach jedem tip enter gedrückt?";
+        theValueString.description = "test description 2";
+        theValueString.label = "labeling";
+        theValueString.userdata = "some user data?";
+
+        theValueDouble = new ValueDescription<>("3", ValueTypes.NUMBER);
+        theValueDouble.value = 3.1415926535897932384626433832795028841971693993751D;
+        theValueDouble.description = "pi";
+
+        theValueInt = new ValueDescription<>("4", ValueTypes.NUMBER);
+        theValueInt.value = 3;
+        theValueInt.description = "int";
 
         // add values to toui
-        toui.add(theValue);
-        toui.add(theValue1);
+        toui.add(theValueLong);
+        toui.add(theValueString);
+        toui.add(theValueDouble);
+        toui.add(theValueInt);
     }
 
     public void updateVar1() {
-        toui.update(theValue.cloneEmpty());
+        theValueLong.value += 1;
+        toui.update(theValueLong.cloneEmpty());
     }
 
     public void updateVar2() {
-        toui.update(theValue1.cloneEmpty());
+        theValueString.value = "content: " + counter;
+        toui.update(theValueString.cloneEmpty());
+    }
+
+    public void dumpCache() {
     }
 
     //------------------------------------------------------------
@@ -97,11 +125,13 @@ public class TOUIServerTest implements Update {
     @Override
     public void update(final ValueDescription<?> _value) {
         // update from client
-        System.out.println("server: update: " + _value.id + " : " + _value.description);
+        System.out.println("server: update: " + _value.id + " : " + _value.value);
 
         // lookup value and update it
 
-        // update all clients
+        // update cache and all clients
         toui.update(_value);
+
+        toui.dumpCache();
     }
 }

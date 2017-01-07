@@ -1,9 +1,11 @@
 package com.io.toui.test;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.io.toui.model.*;
 
 import java.io.IOException;
@@ -25,12 +27,25 @@ public class JsonSerializer implements ITOUISerializer {
         mapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
 
         // do not serialize NULL objects
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(Include.NON_NULL);
 
         // to allow (non-standard) unquoted field names in JSON:
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         // to allow use of apostrophes (single quotes), non standard
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        mapper.configure(Feature.ALLOW_SINGLE_QUOTES, true);
+
+//        SimpleModule testModule = new SimpleModule("PacketModule",
+//                                                   new Version(1,
+//                                                               0,
+//                                                               0,
+//                                                               null,
+//                                                               null,
+//                                                               null)).addDeserializer(data.class,
+//                                                                                      new MyDeserializer(
+//                                                                                              data
+//                                                                                                      .class));
+//
+//        mapper.registerModule(testModule);
     }
 
     @Override

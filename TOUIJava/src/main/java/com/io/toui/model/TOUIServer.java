@@ -39,7 +39,7 @@ public class TOUIServer extends TOUIBase {
 
         if (transporter != null) {
             // send to all clients
-            final Packet packet = new Packet(ICommands.ADD, _value, 0, null);
+            final Packet packet = new Packet(ICommands.ADD, _value, 0L, null);
             transporter.send(serializer.serialize(packet));
         }
     }
@@ -55,7 +55,7 @@ public class TOUIServer extends TOUIBase {
         }
 
         if (transporter != null) {
-            final Packet packet = new Packet(ICommands.REMOVE, _value, 0, null);
+            final Packet packet = new Packet(ICommands.REMOVE, _value, 0L, null);
             transporter.send(serializer.serialize(packet));
         }
     }
@@ -96,12 +96,14 @@ public class TOUIServer extends TOUIBase {
 
     private void _init(final Packet _packet) {
 
+        System.out.println("GOT INIT");
+
         // init with all values
         valueCache.forEach((_s, _valueDescription) -> {
 
             System.out.println("sending ::: " + _valueDescription.description);
 
-            final Packet packet = new Packet(ICommands.ADD, _valueDescription, 0, null);
+            final Packet packet = new Packet(ICommands.ADD, _valueDescription, 0L, null);
             transporter.send(serializer.serialize(packet));
         });
 

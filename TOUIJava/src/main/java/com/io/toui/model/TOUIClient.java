@@ -44,7 +44,7 @@ public class TOUIClient extends TOUIBase {
 
         if (transporter != null) {
             // send to all clients
-            final Packet packet = new Packet(ICommands.INIT, null, 0, null);
+            final Packet packet = new Packet(ICommands.INIT, null, 0L, null);
             transporter.send(serializer.serialize(packet));
         }
     }
@@ -111,6 +111,7 @@ public class TOUIClient extends TOUIBase {
                     // TODO: should call own update here?
                     // -> this should update all clients...
                     // optimize, do not send back to same client??
+                    // maybe not... we maybe want to let listener to decide if to update or not?
 
                     break;
 
