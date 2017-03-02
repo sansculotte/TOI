@@ -3,13 +3,13 @@ package com.io.toui.model;
 /**
  * Created by inx on 29/11/16.
  */
-public class Packet {
+public class Packet<T> {
 
     //------------------------------------------------------------
     //
     public String command;
 
-    public Object data;
+    public T data;
 
     public Long timestamp;
 
@@ -21,7 +21,7 @@ public class Packet {
     }
 
     public Packet(
-            final String _command, final Object _data, final Long _timestamp, final
+            final String _command, final T _data, final Long _timestamp, final
     String _id) {
 
         command = _command;

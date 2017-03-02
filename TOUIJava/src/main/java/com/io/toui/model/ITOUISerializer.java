@@ -9,5 +9,5 @@ public interface ITOUISerializer {
 
     Packet deserialize(byte[] _data);
 
-    ValueDescription<?> convertToValueDescription(Object _o);
+    Parameter<?> convertToParameter(Object _o);
 }

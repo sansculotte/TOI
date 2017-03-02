@@ -1,67 +1,49 @@
 package com.io.toui.model;
 
+import com.io.toui.model.types.TypeDefinition;
+
 /**
- * Created by inx on 29/11/16.
+ * Created by inx on 02/03/17.
  */
-public class ValueDescription<T> {
+public class Parameter<T> {
 
-    //------------------------------------------------------------
-    //
     // mandatory
-    public final String id;
+    public String id;
 
-    public T value;
+    public TypeDefinition<T> type;
 
     // optional
-    final public String type;
+    public T value;
 
-    private T _default;
+    public String group;
+
+    public Number order;
 
     public String description;
 
     public String label;
 
+    // Widget widget;
+
     public Object userdata;
 
-    //------------------------------------------------------------
-    //
-    public ValueDescription() {
-        this(null, null);
+    public Parameter() {
     }
 
-    public ValueDescription(final String _id) {
-        this(_id, ValueTypes.STRING);
-    }
-
-    public ValueDescription(final String _id, final String _type)
-    {
+    public Parameter(final String _id, final TypeDefinition<T> _type) {
         id = _id;
         type = _type;
     }
 
-    public ValueDescription(final String _id, final String _type, final T _value)
-    {
-        id = _id;
-        type = _type;
-        value = _value;
-    }
+    public Parameter<T> cloneEmpty() {
 
-    //------------------------------------------------------------
-    //
-    private String getId() {
-
-        return id;
-    }
-
-    public ValueDescription<T> cloneEmpty() {
-
-        // only id and valie
-        final ValueDescription<T> newDesc = new ValueDescription<>(id, null, value);
+        // only id and value
+        final Parameter<T> newDesc = new Parameter<>(id, type);
 
         return newDesc;
     }
 
-    public void update(ValueDescription<?> _other) {
+    public void update(final Parameter<?> _other) {
 
         if (!id.equals(_other.id)) {
             System.err.println("dont updated unmatching id");
@@ -79,7 +61,7 @@ public class ValueDescription<T> {
             try {
                 value = (T)value.getClass().cast(_other.value);
             }
-            catch (ClassCastException e) {
+            catch (final ClassCastException e) {
 
                 if ((value instanceof Number) && (_other.value instanceof Number)) {
 
@@ -108,12 +90,7 @@ public class ValueDescription<T> {
             }
         }
 
-        final ValueDescription<T> other = (ValueDescription<T>)_other;
-
-
-        if (other._default != null) {
-            _default = other._default;
-        }
+        final Parameter<T> other = (Parameter<T>)_other;
 
         if (other.description != null) {
             description = other.description;
@@ -139,4 +116,3 @@ public class ValueDescription<T> {
 
     }
 }
-

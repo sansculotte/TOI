@@ -1,4 +1,4 @@
-package com.io.toui.model;
+package com.io.toui.model.types;
 
 /**
  * Created by inx on 29/11/16.

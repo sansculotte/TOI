@@ -85,10 +85,10 @@ public class TOUIClient extends TOUIBase {
 
     private void _update(final Packet _packet) {
 
-        // try to convert data to ValueDescription
+        // try to convert data to TypeDefinition
         try {
 
-            final ValueDescription<?> val = serializer.convertToValueDescription(_packet.data);
+            final Parameter<?> val = serializer.convertToParameter(_packet.data);
 
             // sanity check
             if ((val.id == null) || val.id.isEmpty()) {
@@ -135,7 +135,7 @@ public class TOUIClient extends TOUIBase {
                 case ICommands.UPDATE:
 
                     //updated value cache?
-                    final ValueDescription<?> cached = valueCache.get(val.id);
+                    final Parameter<?> cached = valueCache.get(val.id);
                     if (cached != null) {
                         cached.update(val);
 

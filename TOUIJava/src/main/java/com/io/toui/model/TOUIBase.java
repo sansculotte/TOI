@@ -15,7 +15,7 @@ public abstract class TOUIBase implements ITransporterListener {
 
     protected ITransporter transporter;
 
-    protected final Map<String, ValueDescription<?>> valueCache = new HashMap<>();
+    protected final Map<String, Parameter<?>> valueCache = new HashMap<>();
 
     // callback objects
     protected Update updateListener;
@@ -49,7 +49,7 @@ public abstract class TOUIBase implements ITransporterListener {
         }
     }
 
-    public Map<String, ValueDescription<?>> getValueCache() {
+    public Map<String, Parameter<?>> getValueCache() {
         return Collections.unmodifiableMap(valueCache);
     }
 
@@ -69,12 +69,12 @@ public abstract class TOUIBase implements ITransporterListener {
      * @param _value
      *      the value to updated
      */
-    public void update(final ValueDescription<?> _value) {
+    public void update(final Parameter<?> _value) {
 
         // updated valuecache
         if (valueCache.containsKey(_value.id)) {
             // get cached value
-            final ValueDescription<?> desc = valueCache.get(_value.id);
+            final Parameter<?> desc = valueCache.get(_value.id);
 
             desc.update(_value);
         }

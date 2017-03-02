@@ -2,6 +2,8 @@ package com.io.toui.test;
 
 import com.io.toui.model.ICommands.Update;
 import com.io.toui.model.*;
+import com.io.toui.model.types.*;
+import com.io.toui.test.serializer.JsonSerializer;
 import com.io.toui.test.websocket.WebsocketServerTransporter;
 
 import java.io.IOException;
@@ -55,13 +57,13 @@ public class TOUIServerTest implements Update {
     //
     private final TOUIServer toui;
 
-    private final ValueDescription<Long> theValueLong;
+    private final Parameter<Number> theValueLong;
 
-    private final ValueDescription<String> theValueString;
+    private final Parameter<String> theValueString;
 
-    private final ValueDescription<Double> theValueDouble;
+    private final Parameter<Number> theValueDouble;
 
-    private final ValueDescription<Integer> theValueInt;
+    private final Parameter<Number> theValueInt;
 
     private int counter = 0;
 
@@ -74,29 +76,29 @@ public class TOUIServerTest implements Update {
 
 //        final UDPServerTransporter transporter = new UDPServerTransporter(8888);
 //        final TCPServerTransporter transporter = new TCPServerTransporter(8888);
-        final WebsocketServerTransporter transporter = new WebsocketServerTransporter(8888);
+        final WebsocketServerTransporter transporter = new WebsocketServerTransporter(8181);
 
         // create toui
         toui = new TOUIServer(serializer, transporter);
         toui.setUpdateListener(this);
 
         // create values
-        theValueLong = new ValueDescription<>("1", ValueTypes.NUMBER);
+        theValueLong = new Parameter<>("1", new TypeNumber());
         theValueLong.value = 123L;
         theValueLong.description = "long";
 
-        theValueString = new ValueDescription<>("2", ValueTypes.STRING);
+        theValueString = new Parameter<>("2", new TypeString());
         theValueString.value = "oi. jep updates kommen. jeder char einzeln?? oder hast du " +
                                "tatsächlich nach jedem tip enter gedrückt?";
         theValueString.description = "test description 2";
         theValueString.label = "labeling";
         theValueString.userdata = "some user data?";
 
-        theValueDouble = new ValueDescription<>("3", ValueTypes.NUMBER);
+        theValueDouble = new Parameter<>("3", new TypeNumber());
         theValueDouble.value = 3.1415926535897932384626433832795028841971693993751D;
         theValueDouble.description = "pi";
 
-        theValueInt = new ValueDescription<>("4", ValueTypes.NUMBER);
+        theValueInt = new Parameter<>("4", new TypeNumber());
         theValueInt.value = 3;
         theValueInt.description = "int";
 
@@ -108,7 +110,7 @@ public class TOUIServerTest implements Update {
     }
 
     public void updateVar1() {
-        theValueLong.value += 1;
+        theValueLong.value = theValueLong.value.longValue() + 1;
         toui.update(theValueLong.cloneEmpty());
     }
 
@@ -123,7 +125,7 @@ public class TOUIServerTest implements Update {
     //------------------------------------------------------------
     //
     @Override
-    public void updated(final ValueDescription<?> _value) {
+    public void updated(final Parameter<?> _value) {
         // updated from client
         System.out.println("server: updated: " + _value.id + " : " + _value.value);
 

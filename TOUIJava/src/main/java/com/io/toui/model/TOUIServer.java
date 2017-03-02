@@ -27,7 +27,7 @@ public class TOUIServer extends TOUIBase {
 
     //------------------------------------------------------------
     //
-    public void add(final ValueDescription<?> _value) {
+    public void add(final Parameter<?> _value) {
 
         if (!valueCache.containsKey(_value.id)) {
             // added
@@ -44,7 +44,7 @@ public class TOUIServer extends TOUIBase {
         }
     }
 
-    public void remove(final ValueDescription<?> _value) {
+    public void remove(final Parameter<?> _value) {
 
         if (valueCache.containsKey(_value.id)) {
             // removed
@@ -114,10 +114,10 @@ public class TOUIServer extends TOUIBase {
 
     private void _update(final Packet _packet) {
 
-        // try to convert data to ValueDescription
+        // try to convert data to TypeDefinition
         try {
 
-            final ValueDescription<?> val = serializer.convertToValueDescription(_packet.data);
+            final Parameter<?> val = serializer.convertToParameter(_packet.data);
 
             switch (_packet.command) {
                 case ICommands.UPDATE:

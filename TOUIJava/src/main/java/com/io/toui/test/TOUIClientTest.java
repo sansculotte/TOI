@@ -2,11 +2,12 @@ package com.io.toui.test;
 
 import com.io.toui.model.ICommands.*;
 import com.io.toui.model.*;
+import com.io.toui.model.types.*;
+import com.io.toui.test.serializer.JsonSerializer;
 import com.io.toui.test.websocket.WebsocketClientTransporter;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -55,7 +56,7 @@ public class TOUIClientTest implements Add, Remove, Update {
     public TOUIClientTest() throws IOException, URISyntaxException, InterruptedException {
 
         // create serializer and transporter
-        final JsonSerializer       serializer  = new JsonSerializer();
+        final JsonSerializer serializer = new JsonSerializer();
 //        final UDPClientTransporter transporter = new UDPClientTransporter("localhost", 8888);
 //        final TCPClientTransporter transporter = new TCPClientTransporter("localhost", 8888);
         final WebsocketClientTransporter transporter = new WebsocketClientTransporter
@@ -76,19 +77,19 @@ public class TOUIClientTest implements Add, Remove, Update {
 
     public void updateValue() {
 
-        Map<String, ValueDescription<?>> cache = toui.getValueCache();
+        Map<String, Parameter<?>> cache = toui.getValueCache();
 
         if (!cache.isEmpty()) {
 
             Object[] objs = cache.keySet().toArray();
 
-            final ValueDescription<?> val = cache.get(objs[0]);
+            final Parameter<?> val = cache.get(objs[0]);
 
-            if (val.type.equals(ValueTypes.STRING)) {
-                ((ValueDescription<String>)val).value += "-";
+            if (val.type instanceof TypeString) {
+                ((Parameter<String>)val).value += "-";
             }
-            else if (val.type.equals(ValueTypes.NUMBER)) {
-                ((ValueDescription<Number>)val).value = count++;
+            else if (val.type instanceof TypeNumberBase) {
+                ((Parameter<Number>)val).value = count++;
             }
 
             val.dump();
@@ -104,21 +105,21 @@ public class TOUIClientTest implements Add, Remove, Update {
     //------------------------------------------------------------
     //
     @Override
-    public void added(final ValueDescription<?> _value) {
+    public void added(final Parameter<?> _value) {
 
         System.out.println("client: added: " + _value.id);
         toui.dumpCache();
     }
 
     @Override
-    public void updated(final ValueDescription<?> _value) {
+    public void updated(final Parameter<?> _value) {
 
         System.out.println("client: updated: " + _value.id);
         toui.dumpCache();
     }
 
     @Override
-    public void removed(final ValueDescription<?> _value) {
+    public void removed(final Parameter<?> _value) {
 
         System.out.println("client: removed: " + _value.id);
         toui.dumpCache();
