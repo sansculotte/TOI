@@ -21,7 +21,8 @@ public class Packet {
     }
 
     public Packet(
-            final String _command, final Object _data, final Long _timestamp, final String _id) {
+            final String _command, final Object _data, final Long _timestamp, final
+    String _id) {
 
         command = _command;
         data = _data;

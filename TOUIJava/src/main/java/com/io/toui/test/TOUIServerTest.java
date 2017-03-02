@@ -19,26 +19,26 @@ public class TOUIServerTest implements Update {
         try {
             final TOUIServerTest test = new TOUIServerTest();
 
-            while (true) {
-
-                try {
-//                    Thread.sleep(3000);
+//            while (true) {
 //
-//                    test.updateVar1();
+//                try {
+////                    Thread.sleep(3000);
+////
+////                    test.updateVar1();
+////
+////                    Thread.sleep(2000);
+////
+////                    test.updateVar2();
+////
+////                    Thread.sleep(10000);
+////
+////                    test.dumpCache();
 //
-//                    Thread.sleep(2000);
-//
-//                    test.updateVar2();
-
-                    Thread.sleep(10000);
-
-                    test.dumpCache();
-
-                }
-                catch (final InterruptedException _e) {
-                    break;
-                }
-            }
+//                }
+//                catch (final InterruptedException _e) {
+//                    break;
+//                }
+//            }
         }
         catch (final SocketException _e) {
             _e.printStackTrace();
@@ -100,7 +100,7 @@ public class TOUIServerTest implements Update {
         theValueInt.value = 3;
         theValueInt.description = "int";
 
-        // add values to toui
+        // added values to toui
         toui.add(theValueLong);
         toui.add(theValueString);
         toui.add(theValueDouble);
@@ -123,13 +123,13 @@ public class TOUIServerTest implements Update {
     //------------------------------------------------------------
     //
     @Override
-    public void update(final ValueDescription<?> _value) {
-        // update from client
-        System.out.println("server: update: " + _value.id + " : " + _value.value);
+    public void updated(final ValueDescription<?> _value) {
+        // updated from client
+        System.out.println("server: updated: " + _value.id + " : " + _value.value);
 
-        // lookup value and update it
+        // lookup value and updated it
 
-        // update cache and all clients
+        // updated cache and all clients
         toui.update(_value);
 
         toui.dumpCache();

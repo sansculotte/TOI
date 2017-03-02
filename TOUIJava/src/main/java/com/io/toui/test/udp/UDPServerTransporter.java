@@ -68,7 +68,7 @@ public class UDPServerTransporter extends Thread implements ITransporter {
 
                 if (!clients.containsKey(key)) {
                     // FIXME: bad idea to store those "clients" - we never know when they go away
-                    // add client anyway - ignore advice and go on
+                    // added client anyway - ignore advice and go on
                     clients.put(key, new UDPClient(receivePacket.getAddress(), receivePacket
                             .getPort()));
                 }

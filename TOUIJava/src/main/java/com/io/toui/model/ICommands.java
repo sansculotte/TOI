@@ -11,24 +11,24 @@ public interface ICommands {
 
     String VERSION = "version";
 
-    String ADD = "add";
+    String ADD = "added";
 
-    String REMOVE = "remove";
+    String REMOVE = "removed";
 
-    String UPDATE = "update";
+    String UPDATE = "updated";
 
     //------------------------------------------------------------
     //
     interface Add {
-        void add(ValueDescription<?> _value);
+        void added(ValueDescription<?> _value);
     }
 
     interface Remove {
-        void remove(ValueDescription<?> _value);
+        void removed(ValueDescription<?> _value);
     }
 
     interface Update {
-        void update(ValueDescription<?> _value);
+        void updated(ValueDescription<?> _value);
     }
 
     interface Init {

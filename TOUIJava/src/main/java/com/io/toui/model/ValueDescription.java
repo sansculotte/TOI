@@ -64,12 +64,12 @@ public class ValueDescription<T> {
     public void update(ValueDescription<?> _other) {
 
         if (!id.equals(_other.id)) {
-            System.err.println("dont update unmatching id");
+            System.err.println("dont updated unmatching id");
             return;
         }
 
         if ((_other.type != null) && !type.equals(_other.type)) {
-            System.err.println("not update unmatching types");
+            System.err.println("not updated unmatching types");
             return;
         }
 
@@ -103,7 +103,7 @@ public class ValueDescription<T> {
                     }
 
                 } else {
-                    System.err.println("cannot update of from type");
+                    System.err.println("cannot updated of from type");
                 }
             }
         }

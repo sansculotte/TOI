@@ -40,10 +40,11 @@ public class JsonSerializer implements ITOUISerializer {
 //                                                               0,
 //                                                               null,
 //                                                               null,
-//                                                               null)).addDeserializer(data.class,
-//                                                                                      new MyDeserializer(
-//                                                                                              data
-//                                                                                                      .class));
+//                                                               null));
+//
+//        testModule.addDeserializer(Object.class, new MyDeserializer(Object.class));
+//
+////        testModule.
 //
 //        mapper.registerModule(testModule);
     }

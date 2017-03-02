@@ -2,8 +2,7 @@ package com.io.toui.model;
 
 import com.io.toui.model.ICommands.Update;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by inx on 30/11/16.
@@ -50,6 +49,10 @@ public abstract class TOUIBase implements ITransporterListener {
         }
     }
 
+    public Map<String, ValueDescription<?>> getValueCache() {
+        return Collections.unmodifiableMap(valueCache);
+    }
+
     //------------------------------------------------------------
     //
     public void setUpdateListener(final Update _listener) {
@@ -61,14 +64,14 @@ public abstract class TOUIBase implements ITransporterListener {
     //------------------------------------------------------------
     //
     /**
-     * send value update using the transporter
+     * send value updated using the transporter
      *
      * @param _value
-     *      the value to update
+     *      the value to updated
      */
     public void update(final ValueDescription<?> _value) {
 
-        // update valuecache
+        // updated valuecache
         if (valueCache.containsKey(_value.id)) {
             // get cached value
             final ValueDescription<?> desc = valueCache.get(_value.id);

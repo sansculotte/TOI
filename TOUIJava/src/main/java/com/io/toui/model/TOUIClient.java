@@ -90,33 +90,68 @@ public class TOUIClient extends TOUIBase {
 
             final ValueDescription<?> val = serializer.convertToValueDescription(_packet.data);
 
+            // sanity check
+            if ((val.id == null) || val.id.isEmpty()) {
+                System.err.println("ignoring value description without id");
+                return;
+            }
+
             switch (_packet.command) {
                 case ICommands.ADD:
-                    if (addListener != null) {
-                        addListener.add(val);
+
+                    // added to value cache?
+                    if (!valueCache.containsKey(val.id)) {
+
+                        valueCache.put(val.id, val);
+
+                        // inform listener
+                        if (addListener != null) {
+                            addListener.added(val);
+                        }
                     }
+                    else {
+                        System.err.println("client: added: already has value with id: " + val.id);
+                    }
+
+
                     break;
 
                 case ICommands.REMOVE:
-                    if (removeListener != null) {
-                        removeListener.remove(val);
+
+                    if (valueCache.containsKey(val.id)) {
+                        valueCache.remove(val.id);
+
+                        // inform listener
+                        if (removeListener != null) {
+                            removeListener.removed(val);
+                        }
                     }
+                    else {
+                        System.err.println("client: removed: does not know value with id: " + val.id);
+                    }
+
                     break;
 
                 case ICommands.UPDATE:
-                    if (updateListener != null) {
-                        updateListener.update(val);
-                    }
 
-                    // TODO: should call own update here?
-                    // -> this should update all clients...
-                    // optimize, do not send back to same client??
-                    // maybe not... we maybe want to let listener to decide if to update or not?
+                    //updated value cache?
+                    final ValueDescription<?> cached = valueCache.get(val.id);
+                    if (cached != null) {
+                        cached.update(val);
+
+                        // inform listener
+                        if (updateListener != null) {
+                            updateListener.updated(val);
+                        }
+
+                    } else {
+                        System.err.println("client: updated: no value in value cache - ignoring");
+                    }
 
                     break;
 
                 default:
-                    System.err.println("no such command: " + _packet.command);
+                    System.err.println("no such command implemented in client: " + _packet.command);
             }
 
         }

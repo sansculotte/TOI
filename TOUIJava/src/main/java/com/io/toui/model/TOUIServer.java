@@ -30,7 +30,7 @@ public class TOUIServer extends TOUIBase {
     public void add(final ValueDescription<?> _value) {
 
         if (!valueCache.containsKey(_value.id)) {
-            // add
+            // added
             valueCache.put(_value.id, _value);
         }
         else {
@@ -47,7 +47,7 @@ public class TOUIServer extends TOUIBase {
     public void remove(final ValueDescription<?> _value) {
 
         if (valueCache.containsKey(_value.id)) {
-            // remove
+            // removed
             valueCache.remove(_value.id);
         }
         else {
@@ -122,17 +122,18 @@ public class TOUIServer extends TOUIBase {
             switch (_packet.command) {
                 case ICommands.UPDATE:
                     if (updateListener != null) {
-                        updateListener.update(val);
+                        updateListener.updated(val);
                     }
 
-                    // TODO: should call own update here?
-                    // -> this should update all clients...
+                    // TODO: should call own updated here?
+                    // -> this should updated all clients...
                     // optimize, do not send back to same client??
+                    // maybe let listener decide to updated all clients??
 
                     break;
 
                 default:
-                    System.err.println("no such command: " + _packet.command);
+                    System.err.println("no such command implemented in server: " + _packet.command);
             }
 
         }

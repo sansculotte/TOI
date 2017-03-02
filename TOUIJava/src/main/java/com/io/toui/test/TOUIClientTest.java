@@ -50,8 +50,6 @@ public class TOUIClientTest implements Add, Remove, Update {
     //
     private final TOUIClient toui;
 
-    private final Map<String, ValueDescription<?>> values = new HashMap<>();
-
     //------------------------------------------------------------
     //
     public TOUIClientTest() throws IOException, URISyntaxException, InterruptedException {
@@ -78,11 +76,13 @@ public class TOUIClientTest implements Add, Remove, Update {
 
     public void updateValue() {
 
-        if (!values.isEmpty()) {
+        Map<String, ValueDescription<?>> cache = toui.getValueCache();
 
-            Object[] objs = values.keySet().toArray();
+        if (!cache.isEmpty()) {
 
-            final ValueDescription<?> val = values.get(objs[objs.length - 1]);
+            Object[] objs = cache.keySet().toArray();
+
+            final ValueDescription<?> val = cache.get(objs[0]);
 
             if (val.type.equals(ValueTypes.STRING)) {
                 ((ValueDescription<String>)val).value += "-";
@@ -91,9 +91,7 @@ public class TOUIClientTest implements Add, Remove, Update {
                 ((ValueDescription<Number>)val).value = count++;
             }
 
-            System.out.println("---- update: ");
             val.dump();
-            System.out.println();
 
             toui.update(val.cloneEmpty());
 
@@ -106,41 +104,23 @@ public class TOUIClientTest implements Add, Remove, Update {
     //------------------------------------------------------------
     //
     @Override
-    public void update(final ValueDescription<?> _value) {
+    public void added(final ValueDescription<?> _value) {
 
-        if (values.containsKey(_value.id)) {
-            System.out.println("client: update: " + _value.id + " : " + _value.description);
-        }
-        else {
-            System.err.println("client: udpate: client does not know value with id: " + _value.id);
-        }
-
+        System.out.println("client: added: " + _value.id);
         toui.dumpCache();
     }
 
     @Override
-    public void add(final ValueDescription<?> _value) {
+    public void updated(final ValueDescription<?> _value) {
 
-        if (!values.containsKey(_value.id)) {
-            System.out.println("client: add: " + _value.id + " : " + _value.description);
-            values.put(_value.id, _value);
-        }
-        else {
-            System.err.println("client: add: already has value with id: " + _value.id);
-        }
-
+        System.out.println("client: updated: " + _value.id);
         toui.dumpCache();
     }
 
     @Override
-    public void remove(final ValueDescription<?> _value) {
+    public void removed(final ValueDescription<?> _value) {
 
-        if (values.containsKey(_value.id)) {
-            System.out.println("client: remove: " + _value.id + " : " + _value.description);
-            values.remove(_value.id);
-        }
-        else {
-            System.err.println("client: remove: does not know value with id: " + _value.id);
-        }
+        System.out.println("client: removed: " + _value.id);
+        toui.dumpCache();
     }
 }
