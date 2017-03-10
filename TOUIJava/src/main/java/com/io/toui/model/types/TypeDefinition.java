@@ -21,6 +21,10 @@ public abstract class TypeDefinition<T> {
 
     public static final String COLOR = "color";
 
+    public static final String ARRAY = "array";
+
+    public static final String DICTIONARY  = "dictionary";
+
     //----------------------------------------------------
     // local
     private final String name;

@@ -8,6 +8,7 @@ import com.io.toui.test.websocket.WebsocketClientTransporter;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,10 +38,10 @@ public class TOUIClientTest implements Add, Remove, Update {
         catch (final IOException _e) {
             _e.printStackTrace();
         }
-        catch (URISyntaxException _e) {
+        catch (final URISyntaxException _e) {
             _e.printStackTrace();
         }
-        catch (InterruptedException _e) {
+        catch (final InterruptedException _e) {
             _e.printStackTrace();
         }
 
@@ -60,7 +61,7 @@ public class TOUIClientTest implements Add, Remove, Update {
 //        final UDPClientTransporter transporter = new UDPClientTransporter("localhost", 8888);
 //        final TCPClientTransporter transporter = new TCPClientTransporter("localhost", 8888);
         final WebsocketClientTransporter transporter = new WebsocketClientTransporter
-                ("localhost", 8888);
+                ("localhost", 8181);
 
 
         // create toui
@@ -77,24 +78,32 @@ public class TOUIClientTest implements Add, Remove, Update {
 
     public void updateValue() {
 
-        Map<String, Parameter<?>> cache = toui.getValueCache();
+        final Map<String, Parameter<?>> cache = toui.getValueCache();
 
         if (!cache.isEmpty()) {
 
-            Object[] objs = cache.keySet().toArray();
+            final Object[] objs = cache.keySet().toArray();
 
-            final Parameter<?> val = cache.get(objs[0]);
+            final Parameter<?> parameter = cache.get(objs[0]);
+            final Parameter<?> newParam  = parameter.cloneEmpty();
 
-            if (val.type instanceof TypeString) {
-                ((Parameter<String>)val).value += "-";
+            if (parameter.type instanceof TypeString) {
+
+                if (((Parameter<String>)newParam).value == null) {
+                    ((Parameter<String>)newParam).value = "";
+                }
+                ((Parameter<String>)newParam).value += "-";
             }
-            else if (val.type instanceof TypeNumberBase) {
-                ((Parameter<Number>)val).value = count++;
+            else if (parameter.type instanceof TypeNumberBase) {
+                ((Parameter<Number>)newParam).value = count++;
+            }
+            else if (parameter.type instanceof TypeDictionary) {
+//                newParam.value = new HashMap<>();
             }
 
-            val.dump();
+            parameter.dump();
 
-            toui.update(val.cloneEmpty());
+            toui.update(newParam);
 
         } else {
             System.err.println("no values");

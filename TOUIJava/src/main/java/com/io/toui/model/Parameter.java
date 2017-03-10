@@ -2,6 +2,8 @@ package com.io.toui.model;
 
 import com.io.toui.model.types.TypeDefinition;
 
+import java.util.Objects;
+
 /**
  * Created by inx on 02/03/17.
  */
@@ -35,6 +37,7 @@ public class Parameter<T> {
         type = _type;
     }
 
+
     public Parameter<T> cloneEmpty() {
 
         // only id and value
@@ -45,13 +48,13 @@ public class Parameter<T> {
 
     public void update(final Parameter<?> _other) {
 
-        if (!id.equals(_other.id)) {
+        if (!Objects.equals(id, _other.id)) {
             System.err.println("dont updated unmatching id");
             return;
         }
 
-        if ((_other.type != null) && !type.equals(_other.type)) {
-            System.err.println("not updated unmatching types");
+        if ((_other.type != null) && !Objects.equals(type.getName(), _other.type.getName())) {
+            System.err.println("not updated unmatching types: " + type + " != " + _other.type );
             return;
         }
 
@@ -108,7 +111,7 @@ public class Parameter<T> {
     public void dump() {
 
         System.out.println("id:\t\t\t\t" + id);
-        System.out.println("type:\t\t\t" + type);
+        System.out.println("type:\t\t\t" + type.getName());
         System.out.println("value:\t\t\t" + value);
         System.out.println("label:\t\t\t" + label);
         System.out.println("description:\t" + description);
