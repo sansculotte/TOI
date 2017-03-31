@@ -26,7 +26,7 @@ public class TOUIClientTest implements Add, Remove, Update {
             while (true) {
 
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10);
 
                     test.updateValue();
                 }
@@ -99,10 +99,20 @@ public class TOUIClientTest implements Add, Remove, Update {
             }
             else if (parameter.type instanceof TypeDictionary) {
 //                newParam.value = new HashMap<>();
+
+                if (((TypeDictionary)parameter.type).value instanceof TypeNumber) {
+
+                    ((HashMap<String, Number>)newParam
+                            .value).put("rnd", Math.random() * 1024);
+                }
+
+
+//                System.out.println(":: " + parameter.type.getClass().getName());
             }
 
-            parameter.dump();
+//            parameter.dump();
 
+            newParam.type = null;
             toui.update(newParam);
 
         } else {
@@ -117,20 +127,23 @@ public class TOUIClientTest implements Add, Remove, Update {
     public void added(final Parameter<?> _value) {
 
         System.out.println("client: added: " + _value.id);
-        toui.dumpCache();
+//        toui.dumpCache();
+        _value.dump();
     }
 
     @Override
     public void updated(final Parameter<?> _value) {
 
         System.out.println("client: updated: " + _value.id);
-        toui.dumpCache();
+//        toui.dumpCache();
+        _value.dump();
     }
 
     @Override
     public void removed(final Parameter<?> _value) {
 
         System.out.println("client: removed: " + _value.id);
-        toui.dumpCache();
+//        toui.dumpCache();
+        _value.dump();
     }
 }

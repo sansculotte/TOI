@@ -5,4 +5,7 @@ package com.io.toui.model.types;
  */
 public class TypeNumber extends TypeNumberBase<Number> {
 
+    public TypeNumber() {
+        super(Number.class);
+    }
 }

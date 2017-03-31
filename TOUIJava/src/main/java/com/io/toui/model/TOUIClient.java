@@ -119,11 +119,11 @@ public class TOUIClient extends TOUIBase {
                 case ICommands.REMOVE:
 
                     if (valueCache.containsKey(val.id)) {
-                        valueCache.remove(val.id);
+                        Parameter<?> removed = valueCache.remove(val.id);
 
                         // inform listener
                         if (removeListener != null) {
-                            removeListener.removed(val);
+                            removeListener.removed(removed);
                         }
                     }
                     else {
@@ -141,7 +141,7 @@ public class TOUIClient extends TOUIBase {
 
                         // inform listener
                         if (updateListener != null) {
-                            updateListener.updated(val);
+                            updateListener.updated(cached);
                         }
 
                     } else {

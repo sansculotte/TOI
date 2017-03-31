@@ -1,5 +1,7 @@
 package com.io.toui.model.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by inx on 29/11/16.
  */
@@ -31,10 +33,14 @@ public abstract class TypeDefinition<T> {
 
     private T defaultValue;
 
+    @JsonIgnore
+    public Class<T> valueClass;
+
     //
-    public TypeDefinition(final String _name) {
+    public TypeDefinition(final String _name, Class<T> _tClass) {
 
         name = _name;
+        valueClass = _tClass;
     }
 
     public String getName() {
@@ -50,6 +56,16 @@ public abstract class TypeDefinition<T> {
     public void setDefaultValue(final T _defaultValue) {
 
         defaultValue = _defaultValue;
+    }
+
+    private Class<T> getValueClass() {
+
+        return valueClass;
+    }
+
+    private void setValueClass(final Class<T> _valueClass) {
+
+        valueClass = _valueClass;
     }
 }
 

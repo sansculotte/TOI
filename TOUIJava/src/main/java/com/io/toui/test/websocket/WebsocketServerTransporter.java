@@ -93,7 +93,8 @@ public class WebsocketServerTransporter extends WebSocketServer implements ITran
         clients.forEach(_webSocket -> {
             System.out.println("sending to: " + _webSocket.getRemoteSocketAddress().getHostString
                     () + ":" + _webSocket.getRemoteSocketAddress().getPort());
-            _webSocket.send(new String(_data));
+//            _webSocket.send(new String(_data));
+            _webSocket.send(_data);
         });
     }
 

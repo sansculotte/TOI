@@ -53,6 +53,10 @@ public class TypeDefinitionDeserializer extends StdDeserializer<TypeDefinition<?
                 return p.getCodec().treeToValue(node, TypeString.class);
             case TypeDefinition.COLOR:
                 return p.getCodec().treeToValue(node, TypeColor.class);
+            case TypeDefinition.ARRAY:
+                return p.getCodec().treeToValue(node, TypeArray.class);
+            case TypeDefinition.DICTIONARY:
+                return p.getCodec().treeToValue(node, TypeDictionary.class);
         }
 
         return null;

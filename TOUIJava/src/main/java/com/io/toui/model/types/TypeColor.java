@@ -11,6 +11,6 @@ public class TypeColor extends TypeDefinition<Color> {
 
     public TypeColor() {
 
-        super(COLOR);
+        super(COLOR, Color.class);
     }
 }

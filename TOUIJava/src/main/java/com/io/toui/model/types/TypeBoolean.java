@@ -13,6 +13,6 @@ public class TypeBoolean extends TypeDefinition<Boolean> {
 
     public TypeBoolean() {
 
-        super(BOOLEAN);
+        super(BOOLEAN, Boolean.class);
     }
 }

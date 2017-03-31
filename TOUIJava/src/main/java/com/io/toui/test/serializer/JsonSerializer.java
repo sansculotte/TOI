@@ -122,6 +122,8 @@ public class JsonSerializer implements ITOUISerializer {
         mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         // to allow use of apostrophes (single quotes), non standard
         mapper.configure(Feature.ALLOW_SINGLE_QUOTES, true);
+        mapper.configure(Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
+        mapper.configure(Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 
 
         SimpleModule module = new SimpleModule();

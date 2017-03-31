@@ -5,12 +5,12 @@ import com.io.toui.model.Parameter;
 import com.io.toui.model.TOUIServer;
 import com.io.toui.model.types.*;
 import com.io.toui.test.serializer.JsonSerializer;
+import com.io.toui.test.udp.UDPServerTransporter;
 import com.io.toui.test.websocket.WebsocketServerTransporter;
 
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by inx on 29/11/16.
@@ -27,14 +27,14 @@ public class TOUIServerTest implements Update {
 //            while (true) {
 //
 //                try {
-////                    Thread.sleep(3000);
-////
-////                    test.updateVar1();
-////
-////                    Thread.sleep(2000);
-////
-////                    test.updateVar2();
-////
+//                    Thread.sleep(300);
+//
+//                    test.updateVar1();
+//
+//                    Thread.sleep(200);
+//
+//                    test.updateVar2();
+//
 ////                    Thread.sleep(10000);
 ////
 ////                    test.dumpCache();
@@ -68,7 +68,7 @@ public class TOUIServerTest implements Update {
 
     private final Parameter<Number> theValueInt;
 
-    private final Parameter<Map<String, Number>> theValueMap;
+    private final Parameter<HashMap<String, Number>> theValueMap;
 
     private int counter = 0;
 
@@ -79,7 +79,9 @@ public class TOUIServerTest implements Update {
         // create serializer and transporter
         final JsonSerializer serializer = new JsonSerializer();
 
-//        final UDPServerTransporter transporter = new UDPServerTransporter(8888);
+//        final UDPServerTransporter transporter = new UDPServerTransporter(8181);
+//        transporter.setTargetPort(61187);
+
 //        final TCPServerTransporter transporter = new TCPServerTransporter(8888);
         final WebsocketServerTransporter transporter = new WebsocketServerTransporter(8181);
 
@@ -111,27 +113,33 @@ public class TOUIServerTest implements Update {
         dictValue.setMin(0);
         dictValue.setMax(10);
         dictValue.setStep(2);
+
         theValueMap = new Parameter<>("dict", new TypeDictionary<>(dictValue));
-        theValueMap.value = new HashMap<>();
+//        theValueMap.value = new HashMap<>();
         theValueMap.value.put("key1", 123);
         theValueMap.description = "a dictionary";
 
         // added values to toui
         toui.add(theValueLong);
-//        toui.add(theValueString);
-//        toui.add(theValueDouble);
-//        toui.add(theValueInt);
+        toui.add(theValueString);
+        toui.add(theValueDouble);
+        toui.add(theValueInt);
 //        toui.add(theValueMap);
     }
 
     public void updateVar1() {
-        theValueLong.value = theValueLong.value.longValue() + 1;
-        toui.update(theValueLong.cloneEmpty());
+
+        Parameter<Number> newVal = theValueLong.cloneEmpty();
+        newVal.value = theValueLong.value.longValue() + 1;
+
+        toui.update(newVal);
     }
 
     public void updateVar2() {
-        theValueString.value = "content: " + counter;
-        toui.update(theValueString.cloneEmpty());
+        Parameter<String> newVal = theValueString.cloneEmpty();
+
+        newVal.value = "content: " + counter++;
+        toui.update(newVal);
     }
 
     public void dumpCache() {

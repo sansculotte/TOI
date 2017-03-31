@@ -17,7 +17,7 @@ public class TypeString extends TypeDefinition<String> {
 
     public TypeString() {
 
-        super(STRING);
+        super(STRING, String.class);
 
         setDefaultValue("");
     }

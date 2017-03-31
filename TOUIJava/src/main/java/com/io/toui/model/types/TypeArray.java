@@ -5,12 +5,12 @@ import java.util.List;
 /**
  * Created by inx on 02/03/17.
  */
-public class TypeArray extends TypeDefinition<List<?>> {
+public class TypeArray<T> extends TypeDefinition<List<T>> {
 
     TypeDefinition subtype;
 
     public TypeArray() {
 
-        super(ARRAY);
+        super(ARRAY, (Class<List<T>>)(Object)List.class);
     }
 }

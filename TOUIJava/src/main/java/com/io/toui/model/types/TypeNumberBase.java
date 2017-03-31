@@ -19,13 +19,12 @@ public abstract class TypeNumberBase<T extends Number> extends TypeDefinition<T>
 
     private boolean pow2;
 
-
-    public TypeNumberBase() {
-        super(NUMBER);
+    public TypeNumberBase(Class<T> _tClass) {
+        super(NUMBER, _tClass);
     }
 
-    public TypeNumberBase(final String _name) {
-        super(_name);
+    public TypeNumberBase(final String _name, Class<T> _tClass) {
+        super(_name, _tClass);
     }
 
     public Number getPrecision() {

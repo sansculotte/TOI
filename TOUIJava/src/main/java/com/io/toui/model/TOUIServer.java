@@ -104,7 +104,11 @@ public class TOUIServer extends TOUIBase {
             System.out.println("sending ::: " + _valueDescription.description);
 
             final Packet packet = new Packet(ICommands.ADD, _valueDescription, 0L, null);
-            transporter.send(serializer.serialize(packet));
+            byte [] data = serializer.serialize(packet);
+
+            String s = new String(data);
+
+            transporter.send(data);
         });
 
         if (initListener != null) {

@@ -35,7 +35,9 @@ public class UDPServerTransporter extends Thread implements ITransporter {
 
     private ITransporterListener listener;
 
-    private final Map<String, UDPClient> clients = new HashMap<>();
+    private final Collection<InetAddress> clients = new ArrayList<>();
+
+    private int targetPort = 8182;
 
     //------------------------------------------------------------
     //
@@ -64,13 +66,10 @@ public class UDPServerTransporter extends Thread implements ITransporter {
             try {
                 socket.receive(receivePacket);
 
-                final String key = receivePacket.getAddress().toString() + ":" + receivePacket.getPort();
-
-                if (!clients.containsKey(key)) {
+                if (!clients.contains(receivePacket.getAddress())) {
                     // FIXME: bad idea to store those "clients" - we never know when they go away
-                    // added client anyway - ignore advice and go on
-                    clients.put(key, new UDPClient(receivePacket.getAddress(), receivePacket
-                            .getPort()));
+                    // add client anyway - ignore advice and go on
+                    clients.add(receivePacket.getAddress());
                 }
 
                 received(Arrays.copyOf(receivePacket.getData(), receivePacket.getLength()));
@@ -92,16 +91,21 @@ public class UDPServerTransporter extends Thread implements ITransporter {
         }
 
         if (clients.isEmpty()) {
-            System.err.println("no clients");
+            System.err.println("no clients " + new String(_data));
+
             return;
         }
 
-        clients.forEach((_s, _udpClient) -> {
+        clients.forEach(_inetAddress -> {
+
+            System.out.println("ip: " + _inetAddress.getHostAddress() + ":" + targetPort + " :: " +
+                               "" + new String
+                    (_data));
 
             final DatagramPacket sendPacket = new DatagramPacket(_data,
                                                                  _data.length,
-                                                                 _udpClient.address,
-                                                                 _udpClient.port);
+                                                                 _inetAddress,
+                                                                 targetPort);
 
             try {
                 socket.send(sendPacket);
@@ -125,5 +129,10 @@ public class UDPServerTransporter extends Thread implements ITransporter {
         if (listener != null) {
             listener.received(_data);
         }
+    }
+
+    public void setTargetPort(final int _targetPort) {
+
+        targetPort = _targetPort;
     }
 }

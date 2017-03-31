@@ -31,13 +31,13 @@ public class PacketDeserializer extends StdDeserializer<Packet> {
                                                                    IOException,
                                                                    JsonProcessingException {
 
-        JsonNode node = p.getCodec().readTree(p);
+        final JsonNode node = p.getCodec().readTree(p);
 
         if (!node.has("command")) {
             // error
         }
 
-        String command = node.get("command").asText();
+        final String command = node.get("command").asText();
 
         long timestamp = 0;
         if (node.has("timestamp")) {
@@ -58,7 +58,7 @@ public class PacketDeserializer extends StdDeserializer<Packet> {
                 // we expect a Parameter<?>
 
 
-                ObjectNode n = (ObjectNode)node.get("data");
+                final ObjectNode n = (ObjectNode)node.get("data");
 
                 data = p.getCodec().treeToValue(n, Parameter.class);
 
@@ -70,7 +70,7 @@ public class PacketDeserializer extends StdDeserializer<Packet> {
         }
 
 
-        Packet packet = new Packet(command, data, timestamp, packetId);
+        final Packet packet = new Packet(command, data, timestamp, packetId);
 
         return packet;
     }
