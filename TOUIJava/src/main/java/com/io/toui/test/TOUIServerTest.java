@@ -5,11 +5,10 @@ import com.io.toui.model.Parameter;
 import com.io.toui.model.TOUIServer;
 import com.io.toui.model.types.*;
 import com.io.toui.test.serializer.JsonSerializer;
-import com.io.toui.test.udp.UDPServerTransporter;
-import com.io.toui.test.websocket.WebsocketServerTransporter;
+import com.io.toui.test.websocket.server.WebsocketServerTransporterNetty;
 
 import java.io.IOException;
-import java.net.SocketException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 
 /**
@@ -45,10 +44,7 @@ public class TOUIServerTest implements Update {
 //                }
 //            }
         }
-        catch (final SocketException _e) {
-            _e.printStackTrace();
-        }
-        catch (final IOException _e) {
+        catch (final InterruptedException | CertificateException | IOException _e) {
             _e.printStackTrace();
         }
 
@@ -74,7 +70,7 @@ public class TOUIServerTest implements Update {
 
     //------------------------------------------------------------
     //
-    public TOUIServerTest() throws IOException {
+    public TOUIServerTest() throws IOException, CertificateException, InterruptedException {
 
         // create serializer and transporter
         final JsonSerializer serializer = new JsonSerializer();
@@ -83,7 +79,8 @@ public class TOUIServerTest implements Update {
 //        transporter.setTargetPort(61187);
 
 //        final TCPServerTransporter transporter = new TCPServerTransporter(8888);
-        final WebsocketServerTransporter transporter = new WebsocketServerTransporter(8181);
+//        final WebsocketServerTransporter transporter = new WebsocketServerTransporter(8181);
+        final WebsocketServerTransporterNetty transporter = new WebsocketServerTransporterNetty(8181);
 
         // create toui
         toui = new TOUIServer(serializer, transporter);
@@ -125,6 +122,8 @@ public class TOUIServerTest implements Update {
         toui.add(theValueDouble);
         toui.add(theValueInt);
 //        toui.add(theValueMap);
+
+        toui.operateOnCache(valueCache -> {});
     }
 
     public void updateVar1() {

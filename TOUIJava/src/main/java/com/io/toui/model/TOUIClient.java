@@ -39,12 +39,14 @@ public class TOUIClient extends TOUIBase {
      */
     public void init() {
 
-        // clear cache?
-        valueCache.clear();
+        operateOnCache(valueCache -> {
+            // clear cache?
+            valueCache.clear();
+        });
 
         if (transporter != null) {
             // send to all clients
-            final Packet packet = new Packet(ICommands.INIT, null, 0L, null);
+            final Packet<?> packet = new Packet(ICommands.INIT, null, 0L, null);
             transporter.send(serializer.serialize(packet));
         }
     }
@@ -99,54 +101,66 @@ public class TOUIClient extends TOUIBase {
             switch (_packet.command) {
                 case ICommands.ADD:
 
-                    // added to value cache?
-                    if (!valueCache.containsKey(val.id)) {
 
-                        valueCache.put(val.id, val);
+                    operateOnCache(valueCache -> {
 
-                        // inform listener
-                        if (addListener != null) {
-                            addListener.added(val);
+                        // added to value cache?
+                        if (!valueCache.containsKey(val.id)) {
+
+                            valueCache.put(val.id, val);
+
+                            // inform listener
+                            if (addListener != null) {
+                                addListener.added(val);
+                            }
                         }
-                    }
-                    else {
-                        System.err.println("client: added: already has value with id: " + val.id);
-                    }
+                        else {
+                            System.err.println("client: added: already has value with id: " + val.id);
+                        }
+                    });
+
 
 
                     break;
 
                 case ICommands.REMOVE:
 
-                    if (valueCache.containsKey(val.id)) {
-                        Parameter<?> removed = valueCache.remove(val.id);
+                    operateOnCache(valueCache -> {
 
-                        // inform listener
-                        if (removeListener != null) {
-                            removeListener.removed(removed);
+                        if (valueCache.containsKey(val.id)) {
+                            Parameter<?> removed = valueCache.remove(val.id);
+
+                            // inform listener
+                            if (removeListener != null) {
+                                removeListener.removed(removed);
+                            }
                         }
-                    }
-                    else {
-                        System.err.println("client: removed: does not know value with id: " + val.id);
-                    }
+                        else {
+                            System.err.println("client: removed: does not know value with id: " + val.id);
+                        }
+                    });
 
                     break;
 
                 case ICommands.UPDATE:
 
-                    //updated value cache?
-                    final Parameter<?> cached = valueCache.get(val.id);
-                    if (cached != null) {
-                        cached.update(val);
+                    operateOnCache(valueCache -> {
+                        //updated value cache?
+                        final Parameter<?> cached = valueCache.get(val.id);
+                        if (cached != null) {
+                            cached.update(val);
 
-                        // inform listener
-                        if (updateListener != null) {
-                            updateListener.updated(cached);
+                            // inform listener
+                            if (updateListener != null) {
+                                updateListener.updated(cached);
+                            }
+
+                        } else {
+                            System.err.println("client: updated: no value in value cache - ignoring");
                         }
 
-                    } else {
-                        System.err.println("client: updated: no value in value cache - ignoring");
-                    }
+                    });
+
 
                     break;
 

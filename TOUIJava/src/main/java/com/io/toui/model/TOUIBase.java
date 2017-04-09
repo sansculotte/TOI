@@ -3,6 +3,8 @@ package com.io.toui.model;
 import com.io.toui.model.ICommands.Update;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by inx on 30/11/16.
@@ -15,10 +17,12 @@ public abstract class TOUIBase implements ITransporterListener {
 
     protected ITransporter transporter;
 
-    protected final Map<String, Parameter<?>> valueCache = new HashMap<>();
+    private final Map<String, Parameter<?>> valueCache = new ConcurrentHashMap<>();
 
     // callback objects
     protected Update updateListener;
+
+    private final ReentrantLock lock = new ReentrantLock();
 
     //------------------------------------------------------------
     //
@@ -33,6 +37,10 @@ public abstract class TOUIBase implements ITransporterListener {
     public void setSerializer(final ITOUISerializer _serializer) {
 
         serializer = _serializer;
+
+        if (transporter != null) {
+            transporter.setSerializer((Class<ITOUISerializer>)serializer.getClass());
+        }
     }
 
     public void setTransporter(final ITransporter _transporter) {
@@ -46,6 +54,7 @@ public abstract class TOUIBase implements ITransporterListener {
 
         if (transporter != null) {
             transporter.setListener(this);
+            transporter.setSerializer((Class<ITOUISerializer>)serializer.getClass());
         }
     }
 
@@ -96,5 +105,19 @@ public abstract class TOUIBase implements ITransporterListener {
             _valueDescription.dump();
             System.out.println();
         });
+    }
+
+    public void operateOnCache(final ICacheOperator _operator) {
+
+        // single point of entry
+        // locking??
+
+        // FIXME: right??
+        _operator.operate(valueCache);
+//        lock.lock();
+//        try {
+//        } finally {
+//            lock.unlock();
+//        }
     }
 }

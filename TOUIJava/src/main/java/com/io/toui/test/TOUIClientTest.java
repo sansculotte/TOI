@@ -1,10 +1,12 @@
 package com.io.toui.test;
 
 import com.io.toui.model.ICommands.*;
-import com.io.toui.model.*;
+import com.io.toui.model.Parameter;
+import com.io.toui.model.TOUIClient;
 import com.io.toui.model.types.*;
 import com.io.toui.test.serializer.JsonSerializer;
-import com.io.toui.test.websocket.WebsocketClientTransporter;
+import com.io.toui.test.udp.UDPClientTransporter;
+import com.io.toui.test.websocket.client.WebsocketClientTransporter;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -26,9 +28,9 @@ public class TOUIClientTest implements Add, Remove, Update {
             while (true) {
 
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1000);
 
-                    test.updateValue();
+//                    test.updateValue();
                 }
                 catch (final InterruptedException _e) {
                     break;
@@ -57,7 +59,7 @@ public class TOUIClientTest implements Add, Remove, Update {
     public TOUIClientTest() throws IOException, URISyntaxException, InterruptedException {
 
         // create serializer and transporter
-        final JsonSerializer serializer = new JsonSerializer();
+        final JsonSerializer       serializer  = new JsonSerializer();
 //        final UDPClientTransporter transporter = new UDPClientTransporter("localhost", 8888);
 //        final TCPClientTransporter transporter = new TCPClientTransporter("localhost", 8888);
         final WebsocketClientTransporter transporter = new WebsocketClientTransporter

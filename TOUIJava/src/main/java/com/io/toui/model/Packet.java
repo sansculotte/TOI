@@ -1,8 +1,5 @@
 package com.io.toui.model;
 
-/**
- * Created by inx on 29/11/16.
- */
 public class Packet<T> {
 
     //------------------------------------------------------------
@@ -28,5 +25,11 @@ public class Packet<T> {
         data = _data;
         timestamp = _timestamp;
         id = _id;
+    }
+
+    @Override
+    public String toString() {
+
+        return "Packet: " + command + " : " + timestamp + " : " + id;
     }
 }

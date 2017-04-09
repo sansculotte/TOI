@@ -1,7 +1,6 @@
 package com.io.toui.test.udp;
 
-import com.io.toui.model.ITransporter;
-import com.io.toui.model.ITransporterListener;
+import com.io.toui.model.*;
 
 import java.io.IOException;
 import java.net.*;
@@ -84,9 +83,25 @@ public class UDPClientTransporter extends Thread implements ITransporter {
     }
 
     @Override
+    public void send(final Packet<?> _packet) {
+        // TODO
+    }
+
+    @Override
     public void setListener(final ITransporterListener _listener) {
 
         listener = _listener;
+    }
+
+    @Override
+    public void setSerializer(final Class<ITOUISerializer> _serializerClass) {
+
+    }
+
+    @Override
+    public Class<ITOUISerializer> getSerializer() {
+
+        return null;
     }
 
     @Override

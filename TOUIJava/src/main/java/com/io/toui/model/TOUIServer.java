@@ -29,13 +29,17 @@ public class TOUIServer extends TOUIBase {
     //
     public void add(final Parameter<?> _value) {
 
-        if (!valueCache.containsKey(_value.id)) {
-            // added
-            valueCache.put(_value.id, _value);
-        }
-        else {
-            System.out.println("already added value with this id - ignore");
-        }
+        operateOnCache(valueCache -> {
+            if (!valueCache.containsKey(_value.id)) {
+                // added
+                valueCache.put(_value.id, _value);
+            }
+            else {
+                System.out.println("already added value with this id - ignore");
+            }
+        });
+
+
 
         if (transporter != null) {
             // send to all clients
@@ -46,13 +50,17 @@ public class TOUIServer extends TOUIBase {
 
     public void remove(final Parameter<?> _value) {
 
-        if (valueCache.containsKey(_value.id)) {
-            // removed
-            valueCache.remove(_value.id);
-        }
-        else {
-            System.out.println("value not in cache - ignore");
-        }
+        operateOnCache(valueCache -> {
+
+            if (valueCache.containsKey(_value.id)) {
+                // removed
+                valueCache.remove(_value.id);
+            }
+            else {
+                System.out.println("value not in cache - ignore");
+            }
+        });
+
 
         if (transporter != null) {
             final Packet packet = new Packet(ICommands.REMOVE, _value, 0L, null);
@@ -98,18 +106,23 @@ public class TOUIServer extends TOUIBase {
 
         System.out.println("GOT INIT");
 
-        // init with all values
-        valueCache.forEach((_s, _valueDescription) -> {
+        operateOnCache(valueCache -> {
 
-            System.out.println("sending ::: " + _valueDescription.description);
+            // init with all values
+            valueCache.forEach((_s, _valueDescription) -> {
 
-            final Packet packet = new Packet(ICommands.ADD, _valueDescription, 0L, null);
-            byte [] data = serializer.serialize(packet);
+                System.out.println("sending ::: " + _valueDescription.description);
 
-            String s = new String(data);
+                final Packet packet = new Packet(ICommands.ADD, _valueDescription, 0L, null);
+                byte [] data = serializer.serialize(packet);
 
-            transporter.send(data);
+                String s = new String(data);
+
+                transporter.send(data);
+            });
+
         });
+
 
         if (initListener != null) {
             initListener.init();
