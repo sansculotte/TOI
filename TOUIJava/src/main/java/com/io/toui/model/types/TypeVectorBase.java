@@ -17,10 +17,6 @@ public abstract class TypeVectorBase<T extends VectorBase> extends TypeDefinitio
     private boolean pow2;
 
 
-    public TypeVectorBase(Class<T> _tClass) {
-        super(NUMBER, _tClass);
-    }
-
     public TypeVectorBase(final String _name, Class<T> _tClass) {
         super(_name, _tClass);
     }

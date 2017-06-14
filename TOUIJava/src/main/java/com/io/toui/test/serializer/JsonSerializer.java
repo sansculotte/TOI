@@ -18,40 +18,40 @@ public class JsonSerializer implements ITOUISerializer {
 
     public static void main(String[] args) {
 
-        Packet<Parameter<?>> packet = new Packet<>();
-
-        packet.command = ICommands.ADD;
-        packet.id = "packet id";
-
-        TypeNumber doubleType = new TypeNumber();
-        doubleType.setCyclic(true);
-        doubleType.setMax(100);
-        doubleType.setMin(0.01);
-        doubleType.setDefaultValue(10.1010);
-
-        Parameter<Number> numberParameter = new Parameter<>("parm id", doubleType);
-        numberParameter.value = 3.1415926535897932384626433832795028841971693993751;
-        numberParameter.group = "testgroup";
-
-
-        TypeString stringType = new TypeString();
-        stringType.format = TypeString.Format.IP;
-        stringType.setDefaultValue("mydefault");
-        Parameter<String> strParam = new Parameter<>("string id", stringType);
-
-        strParam.value = "my value blabla";
-        strParam.description = "a description for this string value";
-        strParam.group = "groupA";
-        strParam.label = "a string";
-        strParam.order = 3;
-
-        packet.data = numberParameter;
-
-//        packet.data = new Parameter<>("parameter id 1", new TypeString());
-//        ((TypeString)packet.data.type).filemask = "mask";
-
-        JsonSerializer serializer = new JsonSerializer();
-        serializer.serialize(packet);
+//        Packet<Parameter<?>> packet = new Packet<>();
+//
+//        packet.command = ICommands.ADD;
+//        packet.id = "packet id";
+//
+//        TypeNumber doubleType = new TypeNumber();
+//        doubleType.setCyclic(true);
+//        doubleType.setMax(100);
+//        doubleType.setMin(0.01);
+//        doubleType.setDefaultValue(10.1010);
+//
+//        Parameter<Number> numberParameter = new Parameter<>("parm id", doubleType);
+//        numberParameter.value = 3.1415926535897932384626433832795028841971693993751;
+//        numberParameter.group = "testgroup";
+//
+//
+//        TypeString stringType = new TypeString();
+//        stringType.format = TypeString.Format.IP;
+//        stringType.setDefaultValue("mydefault");
+//        Parameter<String> strParam = new Parameter<>("string id", stringType);
+//
+//        strParam.value = "my value blabla";
+//        strParam.description = "a description for this string value";
+//        strParam.group = "groupA";
+//        strParam.label = "a string";
+//        strParam.order = 3;
+//
+//        packet.data = numberParameter;
+//
+////        packet.data = new Parameter<>("parameter id 1", new TypeString());
+////        ((TypeString)packet.data.type).filemask = "mask";
+//
+//        JsonSerializer serializer = new JsonSerializer();
+//        serializer.serialize(packet);
 
     }
 
@@ -128,7 +128,7 @@ public class JsonSerializer implements ITOUISerializer {
 
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Packet.class, new PacketDeserializer());
-//        module.addDeserializer(Parameter.class, new ParameterDeserializer());
+        module.addDeserializer(Parameter.class, new ParameterDeserializer());
         module.addDeserializer(TypeDefinition.class, new TypeDefinitionDeserializer());
         mapper.registerModule(module);
 

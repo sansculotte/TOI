@@ -3,14 +3,9 @@ package com.io.toui.test;
 import com.io.toui.model.ICommands.Update;
 import com.io.toui.model.Parameter;
 import com.io.toui.model.TOUIServer;
-import com.io.toui.model.types.*;
+import com.io.toui.model.types.TypeString;
 import com.io.toui.test.serializer.JsonSerializer;
-import com.io.toui.test.udp.UDPServerTransporter;
 import com.io.toui.test.websocket.WebsocketServerTransporter;
-
-import java.io.IOException;
-import java.net.SocketException;
-import java.util.HashMap;
 
 /**
  * Created by inx on 29/11/16.
@@ -21,36 +16,36 @@ public class TOUIServerTest implements Update {
     //
     public static void main(final String[] args) {
 
-        try {
-            final TOUIServerTest test = new TOUIServerTest();
-
-//            while (true) {
+//        try {
+//            final TOUIServerTest test = new TOUIServerTest();
 //
-//                try {
-//                    Thread.sleep(300);
-//
-//                    test.updateVar1();
-//
-//                    Thread.sleep(200);
-//
-//                    test.updateVar2();
-//
-////                    Thread.sleep(10000);
+////            while (true) {
 ////
-////                    test.dumpCache();
-//
-//                }
-//                catch (final InterruptedException _e) {
-//                    break;
-//                }
-//            }
-        }
-        catch (final SocketException _e) {
-            _e.printStackTrace();
-        }
-        catch (final IOException _e) {
-            _e.printStackTrace();
-        }
+////                try {
+////                    Thread.sleep(300);
+////
+////                    test.updateVar1();
+////
+////                    Thread.sleep(200);
+////
+////                    test.updateVar2();
+////
+//////                    Thread.sleep(10000);
+//////
+//////                    test.dumpCache();
+////
+////                }
+////                catch (final InterruptedException _e) {
+////                    break;
+////                }
+////            }
+//        }
+//        catch (final SocketException _e) {
+//            _e.printStackTrace();
+//        }
+//        catch (final IOException _e) {
+//            _e.printStackTrace();
+//        }
 
         System.out.println("finish server");
     }
@@ -60,21 +55,21 @@ public class TOUIServerTest implements Update {
     //
     private final TOUIServer toui;
 
-    private final Parameter<Number> theValueLong;
+//    private final Parameter<Number> theValueLong;
 
     private final Parameter<String> theValueString;
 
-    private final Parameter<Number> theValueDouble;
+//    private final Parameter<Number> theValueDouble;
+//
+//    private final Parameter<Number> theValueInt;
+//
+//    private final Parameter<HashMap<String, Number>> theValueMap;
 
-    private final Parameter<Number> theValueInt;
-
-    private final Parameter<HashMap<String, Number>> theValueMap;
-
-    private int counter = 0;
+    private int counter;
 
     //------------------------------------------------------------
     //
-    public TOUIServerTest() throws IOException {
+    public TOUIServerTest() {
 
         // create serializer and transporter
         final JsonSerializer serializer = new JsonSerializer();
@@ -83,16 +78,16 @@ public class TOUIServerTest implements Update {
 //        transporter.setTargetPort(61187);
 
 //        final TCPServerTransporter transporter = new TCPServerTransporter(8888);
-        final WebsocketServerTransporter transporter = new WebsocketServerTransporter(8181);
+        final WebsocketServerTransporter transporter = new WebsocketServerTransporter(10000);
 
         // create toui
         toui = new TOUIServer(serializer, transporter);
         toui.setUpdateListener(this);
 
         // create values
-        theValueLong = new Parameter<>("1", new TypeNumber());
-        theValueLong.value = 123L;
-        theValueLong.description = "long";
+//        theValueLong = new Parameter<Number>("1", new TypeLong(longtypes.UINT_64));
+//        theValueLong.value = 123L;
+//        theValueLong.description = "long";
 
         theValueString = new Parameter<>("2", new TypeString());
         theValueString.value = "oi. jep updates kommen. jeder char einzeln?? oder hast du " +
@@ -101,38 +96,38 @@ public class TOUIServerTest implements Update {
         theValueString.label = "labeling";
         theValueString.userdata = "some user data?";
 
-        theValueDouble = new Parameter<>("3", new TypeNumber());
-        theValueDouble.value = 3.1415926535897932384626433832795028841971693993751D;
-        theValueDouble.description = "pi";
+//        theValueDouble = new Parameter<>("3", new TypeNumber());
+//        theValueDouble.value = 3.1415926535897932384626433832795028841971693993751D;
+//        theValueDouble.description = "pi";
+//
+//        theValueInt = new Parameter<>("4", new TypeNumber());
+//        theValueInt.value = 3;
+//        theValueInt.description = "int";
 
-        theValueInt = new Parameter<>("4", new TypeNumber());
-        theValueInt.value = 3;
-        theValueInt.description = "int";
-
-        TypeNumber dictValue = new TypeNumber();
-        dictValue.setMin(0);
-        dictValue.setMax(10);
-        dictValue.setStep(2);
-
-        theValueMap = new Parameter<>("dict", new TypeDictionary<>(dictValue));
-//        theValueMap.value = new HashMap<>();
-        theValueMap.value.put("key1", 123);
-        theValueMap.description = "a dictionary";
-
-        // added values to toui
-        toui.add(theValueLong);
-        toui.add(theValueString);
-        toui.add(theValueDouble);
-        toui.add(theValueInt);
+//        TypeNumber dictValue = new TypeNumber();
+//        dictValue.setMin(0);
+//        dictValue.setMax(10);
+//        dictValue.setStep(2);
+//
+//        theValueMap = new Parameter<>("dict", new TypeDictionary<>(dictValue));
+////        theValueMap.value = new HashMap<>();
+//        theValueMap.value.put("key1", 123);
+//        theValueMap.description = "a dictionary";
+//
+//        // added values to toui
+//        toui.add(theValueLong);
+//        toui.add(theValueString);
+//        toui.add(theValueDouble);
+//        toui.add(theValueInt);
 //        toui.add(theValueMap);
     }
 
     public void updateVar1() {
 
-        Parameter<Number> newVal = theValueLong.cloneEmpty();
-        newVal.value = theValueLong.value.longValue() + 1;
-
-        toui.update(newVal);
+//        Parameter<Number> newVal = theValueLong.cloneEmpty();
+//        newVal.value = theValueLong.value.longValue() + 1;
+//
+//        toui.update(newVal);
     }
 
     public void updateVar2() {

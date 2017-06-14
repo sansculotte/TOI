@@ -5,36 +5,91 @@ package com.io.toui.model.types;
  */
 public abstract class TypeNumberBase<T extends Number> extends TypeDefinition<T> {
 
-    private Number precision;
+    enum ScaleFunc {
+        LINEAR,
+        LOG,
+        EXP
+    }
+
+    private static String typeToString(final TypeDefinition.numtypes _type) {
+        switch (_type) {
+            case INT_8:
+                return TypeDefinition.INT_8;
+            case INT_16:
+                return TypeDefinition.INT_16;
+            case INT_32:
+                return TypeDefinition.INT_32;
+            case INT_64:
+                return TypeDefinition.INT_64;
+            case UINT_8:
+                return TypeDefinition.UINT_8;
+            case UINT_16:
+                return TypeDefinition.UINT_16;
+            case UINT_32:
+                return TypeDefinition.UINT_32;
+            case UINT_64:
+                return TypeDefinition.UINT_64;
+            case FLOAT_32:
+                return TypeDefinition.FLOAT_32;
+            case FLOAT_64:
+                return TypeDefinition.FLOAT_64;
+        }
+
+        return TypeDefinition.INT_32;
+    }
+
+    private static String classToDefault(Class<?> _tClass) {
+
+        if (_tClass.equals(Integer.class)) {
+            return TypeDefinition.INT_32;
+        }
+
+        if (_tClass.equals(Long.class)) {
+            return TypeDefinition.INT_64;
+        }
+
+        if (_tClass.equals(Float.class)) {
+            return TypeDefinition.FLOAT_32;
+        }
+
+        if (_tClass.equals(Double.class)) {
+            return TypeDefinition.FLOAT_64;
+        }
+
+        // ??
+        return TypeDefinition.FLOAT_64;
+    }
 
     private T min;
 
     private T max;
 
-    private Number step;
+    private Number multipleof;
+
+    private ScaleFunc scale;
 
     private String unit;
 
-    private boolean cyclic;
-
-    private boolean pow2;
-
     public TypeNumberBase(Class<T> _tClass) {
-        super(NUMBER, _tClass);
+        super(classToDefault(_tClass), _tClass);
     }
 
-    public TypeNumberBase(final String _name, Class<T> _tClass) {
+    public TypeNumberBase(final TypeDefinition.numtypes _type, Class<T> _tClass) {
+        super(typeToString(_type), _tClass);
+    }
+
+    private TypeNumberBase(final String _name, Class<T> _tClass) {
         super(_name, _tClass);
     }
 
-    public Number getPrecision() {
+    public Number getMultipleof() {
 
-        return precision;
+        return multipleof;
     }
 
-    public void setPrecision(final int _precision) {
+    public void setMultipleof(final Number _value) {
 
-        precision = _precision;
+        multipleof = _value;
     }
 
     public T getMin() {
@@ -57,16 +112,6 @@ public abstract class TypeNumberBase<T extends Number> extends TypeDefinition<T>
         max = _max;
     }
 
-    public Number getStep() {
-
-        return step;
-    }
-
-    public void setStep(final double _step) {
-
-        step = _step;
-    }
-
     public String getUnit() {
 
         return unit;
@@ -75,25 +120,5 @@ public abstract class TypeNumberBase<T extends Number> extends TypeDefinition<T>
     public void setUnit(final String _unit) {
 
         unit = _unit;
-    }
-
-    public boolean isCyclic() {
-
-        return cyclic;
-    }
-
-    public void setCyclic(final boolean _cyclic) {
-
-        cyclic = _cyclic;
-    }
-
-    public boolean isPow2() {
-
-        return pow2;
-    }
-
-    public void setPow2(final boolean _pow2) {
-
-        pow2 = _pow2;
     }
 }

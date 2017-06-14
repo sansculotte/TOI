@@ -40,11 +40,14 @@ public class WebsocketServerTransporter extends WebSocketServer implements ITran
     // WebSocketServer
     @Override
     public void onOpen(final WebSocket _socket, final ClientHandshake arg1) {
+
+        System.out.println("opened");
         clients.add(_socket);
     }
 
     @Override
     public void onClose(final WebSocket _socket, final int code, final String reason, final boolean remote) {
+        System.out.println("closed");
         clients.remove(_socket);
     }
 

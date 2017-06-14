@@ -35,6 +35,7 @@ public class PacketDeserializer extends StdDeserializer<Packet> {
 
         if (!node.has("command")) {
             // error
+            return null;
         }
 
         final String command = node.get("command").asText();

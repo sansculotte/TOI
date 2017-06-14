@@ -1,0 +1,106 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>websocket client example</title>
+
+<script>
+
+
+	function str2ab(str) {
+		var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+		var bufView = new Uint16Array(buf);
+		for (var i=0, strLen=str.length; i<strLen; i++) {
+			bufView[i] = str.charCodeAt(i);
+		}
+		return buf;
+	}
+
+	var socketPort = 8181;
+	var socket = new WebSocket("ws://127.0.0.1:" + socketPort);
+	//socket.binaryType = 'blob';
+
+	//------------------------------------------------
+	// socket
+	//------------------------------------------------
+	socket.onopen = function(event)
+	{
+		console.log("websocket is ready to send");
+		document.getElementById("sendButton").disabled = false;
+	};
+
+
+	socket.onclose = function(event) {
+		console.log("socket closed");
+		document.getElementById("sendButton").disabled = true;
+	};
+
+
+
+	socket.onmessage = function(event) {
+        console.log("received: " + event.data);
+	};
+
+	socket.onerror = function(event) {
+		console.log("error: " + event.data);
+	}
+
+
+	//------------------------------------------------
+	// sending
+	//------------------------------------------------
+	function send(msg)
+	{
+		console.log("sending" + msg);
+		// send as String
+		socket.send(msg.toString());
+	}
+
+	//------------------------------------------------
+	// user interaction
+	//------------------------------------------------
+	// send the content of the messagebox
+	function sendMessageBox()
+	{
+		var str = document.getElementById("messageTextBox").value;
+		send(str);
+	}
+
+	function sendMessageBoxBlob()
+	{
+		var str = document.getElementById("messageTextBox").value;
+		var blob = new Blob([str]);
+
+  	var byteArray = str2ab(str)
+
+		send(blob);
+	}
+
+
+
+	// reconnect
+	function doReconnect() {
+		// try to reconnect
+		socket = new WebSocket("ws://localhost:" + socketPort);
+	}
+</script>
+
+
+</head>
+
+
+<body>
+	<label>Message:</label><input id="messageTextBox" value="" />
+	<button id="sendButton" disabled="disabled" onclick="javascript:sendMessageBox();">
+			Send
+	</button>
+	<br>
+	<button id="sendButtonBlob" onclick="javascript:sendMessageBoxBlob();">
+			Send Blob
+	</button>
+
+    <br><br>
+    <button id="reconnectButton" disabled="disabled" onclick="javascript:doReconnect();">
+			Reconnect
+	</button>
+</body>
+</html>

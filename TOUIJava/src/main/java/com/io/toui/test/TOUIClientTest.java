@@ -26,9 +26,9 @@ public class TOUIClientTest implements Add, Remove, Update {
             while (true) {
 
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1000);
 
-                    test.updateValue();
+//                    test.updateValue();
                 }
                 catch (final InterruptedException _e) {
                     break;
@@ -100,11 +100,11 @@ public class TOUIClientTest implements Add, Remove, Update {
             else if (parameter.type instanceof TypeDictionary) {
 //                newParam.value = new HashMap<>();
 
-                if (((TypeDictionary)parameter.type).value instanceof TypeNumber) {
-
-                    ((HashMap<String, Number>)newParam
-                            .value).put("rnd", Math.random() * 1024);
-                }
+//                if (((TypeDictionary)parameter.type).value instanceof TypeNumber) {
+//
+//                    ((HashMap<String, Number>)newParam
+//                            .value).put("rnd", Math.random() * 1024);
+//                }
 
 
 //                System.out.println(":: " + parameter.type.getClass().getName());
