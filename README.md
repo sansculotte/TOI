@@ -235,8 +235,8 @@ a long-string. 32bit size-prefixed UTF-8 string
 | Colorbox | 0x17 |
 | Table | 0x18 |
 | Treeview | 0x19 |
-| Dropdown | 0x20 |
-| XYField | 0x21 |
+| Dropdown | 0x1a |
+| XYField | 0x1b |
 
 ### label-position table:
 
