@@ -22,9 +22,9 @@ draft...
 
 ## Types
 
-- tiny-string: <size 1-byte> <UTF-8 string-data>
-- short-string: <size 2-byte> <string-data>
-- long-string: <size 4-byte> <string-data>
+- tiny-string: prefixed with size [1-byte] followed by [UTF-8 string-data]
+- short-string: prefixed with size [2-byte] followed by [UTF-8 string-data]
+- long-string: prefixed with size [4-byte] followed by [UTF-8 string-data]
 
 ## Package
 
