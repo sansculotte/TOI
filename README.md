@@ -20,6 +20,10 @@ eno, ingo, ingolf, joreg, karsten
 
 draft...
 
+## Endianess
+
+The format is using big endian
+
 ## Types
 
 - tiny-string: prefixed with size [1-byte] followed by [UTF-8 string-data]
