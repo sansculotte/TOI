@@ -20,15 +20,15 @@ public interface ICommands {
     //------------------------------------------------------------
     //
     interface Add {
-        void added(Parameter<?> _value);
+        void added(ToiParameter<?> _value);
     }
 
     interface Remove {
-        void removed(Parameter<?> _value);
+        void removed(ToiParameter<?> _value);
     }
 
     interface Update {
-        void updated(Parameter<?> _value);
+        void updated(ToiParameter<?> _value);
     }
 
     interface Init {

@@ -2,7 +2,6 @@ package com.io.toui.test.websocket.client;
 
 import com.io.toui.model.*;
 import com.io.toui.test.netty.*;
-import com.io.toui.test.serializer.TOUISerializerFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -27,7 +26,7 @@ public class WebsocketClientTransporter implements ITransporter {
 
     private ITransporterListener listener;
 
-    TOUISerializerFactory serializerFactory = new TOUISerializerFactory();
+//    TOUISerializerFactory serializerFactory = new TOUISerializerFactory();
 
     public WebsocketClientTransporter(final String host, final int port) throws
                                                                          URISyntaxException,
@@ -70,7 +69,7 @@ public class WebsocketClientTransporter implements ITransporter {
                          pipeline.addLast(new BinaryWebSocketFrameEncoder());
                          pipeline.addLast(new StringTextWebSocketFrameEncoder());
                          pipeline.addLast(new ByteArrayTextWebSocketFrameEncoder());
-                         pipeline.addLast(new TOUIPacketEncoder(serializerFactory.createSerializer()));
+                         pipeline.addLast(new TOUIPacketEncoder());
 
                      }
                  });
@@ -86,29 +85,23 @@ public class WebsocketClientTransporter implements ITransporter {
     }
 
     @Override
+    public void received(final ToiPacket _packet) {
+
+    }
+
+    @Override
     public void send(final byte[] _data) {
 
         ch.writeAndFlush(_data);
     }
 
     @Override
-    public void send(final Packet<?> _packet) {
+    public void send(final ToiPacket _packet) {
         ch.writeAndFlush(_packet);
     }
 
     @Override
     public void setListener(final ITransporterListener _listener) {
         listener = _listener;
-    }
-
-    @Override
-    public void setSerializer(final Class<ITOUISerializer> _serializerClass) {
-
-    }
-
-    @Override
-    public Class<ITOUISerializer> getSerializer() {
-
-        return null;
     }
 }

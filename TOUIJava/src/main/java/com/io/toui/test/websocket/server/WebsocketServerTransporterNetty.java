@@ -4,12 +4,15 @@ import com.io.toui.model.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
@@ -31,7 +34,7 @@ public final class WebsocketServerTransporterNetty implements ITransporter {
 
     private ITransporterListener   listener;
 
-    public  Class<ITOUISerializer> serializerClass;
+    final ChannelGroup allClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     public WebsocketServerTransporterNetty(final int _port) throws
                                                             CertificateException,
@@ -49,7 +52,7 @@ public final class WebsocketServerTransporterNetty implements ITransporter {
         final ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
          //             .handler(new LoggingHandler(LogLevel.INFO))
-         .childHandler(new WebSocketServerInitializer(sslCtx));
+         .childHandler(new WebSocketServerInitializer(sslCtx, this));
 
         ch = bootstrap.bind(_port).sync().channel();
 
@@ -61,6 +64,8 @@ public final class WebsocketServerTransporterNetty implements ITransporter {
     }
 
     public void stop() throws InterruptedException {
+
+        allClients.close().awaitUninterruptibly();
 
         ch.closeFuture().sync();
 
@@ -76,6 +81,12 @@ public final class WebsocketServerTransporterNetty implements ITransporter {
         received(_data);
     }
 
+    public void received(final ChannelHandlerContext ctx, final ToiPacket _packet) {
+
+        lastCtx = ctx;
+        received(_packet);
+    }
+
     public void done(final ChannelHandlerContext ctx) {
 
         lastCtx = null;
@@ -84,12 +95,17 @@ public final class WebsocketServerTransporterNetty implements ITransporter {
     @Override
     public void received(final byte[] _data) {
 
-        //        System.out.println("recv: " + new String(_data));
-
         if (listener != null) {
             listener.received(_data);
         }
+    }
 
+    @Override
+    public void received(final ToiPacket _packet) {
+
+        if (listener != null) {
+            listener.received(_packet);
+        }
     }
 
     @Override
@@ -103,8 +119,19 @@ public final class WebsocketServerTransporterNetty implements ITransporter {
     }
 
     @Override
-    public void send(final Packet<?> _packet) {
-        // TODO
+    public void send(final ToiPacket _packet) {
+
+        if (lastCtx != null) {
+
+            lastCtx.channel().writeAndFlush(_packet);
+
+        } else {
+            // send to all
+
+            System.out.println(" ->> send to all");
+
+            allClients.writeAndFlush(_packet);
+        }
     }
 
     @Override
@@ -113,15 +140,17 @@ public final class WebsocketServerTransporterNetty implements ITransporter {
         listener = _listener;
     }
 
-    @Override
-    public void setSerializer(final Class<ITOUISerializer> _serializerClass) {
+    public void addChannel(final Channel _channel) {
 
-        serializerClass = _serializerClass;
+        System.out.println("add channel: " + _channel.config());
+
+        allClients.add(_channel);
     }
 
-    @Override
-    public Class<ITOUISerializer> getSerializer() {
+    public void removeChannel(final Channel _channel) {
 
-        return serializerClass;
+        System.out.println("remove channel: " + _channel.config());
+
+        allClients.remove(_channel);
     }
 }

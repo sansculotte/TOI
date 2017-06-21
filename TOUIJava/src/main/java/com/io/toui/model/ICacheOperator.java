@@ -5,6 +5,6 @@ import java.util.Map;
 @FunctionalInterface
 public interface ICacheOperator {
 
-    void operate(final Map<String, Parameter<?>> valueCache);
+    void operate(final Map<Integer, ToiParameter<?>> valueCache);
 
 }

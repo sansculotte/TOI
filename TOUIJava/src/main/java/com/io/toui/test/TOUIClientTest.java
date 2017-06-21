@@ -1,11 +1,9 @@
 package com.io.toui.test;
 
 import com.io.toui.model.ICommands.*;
-import com.io.toui.model.Parameter;
-import com.io.toui.model.TOUIClient;
-import com.io.toui.model.types.*;
-import com.io.toui.test.serializer.JsonSerializer;
-import com.io.toui.test.udp.UDPClientTransporter;
+import com.io.toui.model.*;
+import com.io.toui.model.types.ToiTypeNumber;
+import com.io.toui.model.types.ToiTypeSTRING;
 import com.io.toui.test.websocket.client.WebsocketClientTransporter;
 
 import java.io.IOException;
@@ -37,13 +35,7 @@ public class TOUIClientTest implements Add, Remove, Update {
                 }
             }
         }
-        catch (final IOException _e) {
-            _e.printStackTrace();
-        }
-        catch (final URISyntaxException _e) {
-            _e.printStackTrace();
-        }
-        catch (final InterruptedException _e) {
+        catch (final IOException | InterruptedException | URISyntaxException _e) {
             _e.printStackTrace();
         }
 
@@ -59,7 +51,6 @@ public class TOUIClientTest implements Add, Remove, Update {
     public TOUIClientTest() throws IOException, URISyntaxException, InterruptedException {
 
         // create serializer and transporter
-        final JsonSerializer       serializer  = new JsonSerializer();
 //        final UDPClientTransporter transporter = new UDPClientTransporter("localhost", 8888);
 //        final TCPClientTransporter transporter = new TCPClientTransporter("localhost", 8888);
         final WebsocketClientTransporter transporter = new WebsocketClientTransporter
@@ -67,7 +58,7 @@ public class TOUIClientTest implements Add, Remove, Update {
 
 
         // create toui
-        toui = new TOUIClient(serializer, transporter);
+        toui = new TOUIClient(transporter);
         toui.setUpdateListener(this);
         toui.setAddListener(this);
         toui.setRemoveListener(this);
@@ -80,41 +71,43 @@ public class TOUIClientTest implements Add, Remove, Update {
 
     public void updateValue() {
 
-        final Map<String, Parameter<?>> cache = toui.getValueCache();
+        final Map<Integer, ToiParameter<?>> cache = toui.getValueCache();
 
         if (!cache.isEmpty()) {
 
             final Object[] objs = cache.keySet().toArray();
 
-            final Parameter<?> parameter = cache.get(objs[0]);
-            final Parameter<?> newParam  = parameter.cloneEmpty();
+            final ToiParameter<?> parameter = cache.get(objs[0]);
 
-            if (parameter.type instanceof TypeString) {
+            final ToiParameter<?> newParam  = parameter.cloneEmpty();
 
-                if (((Parameter<String>)newParam).value == null) {
-                    ((Parameter<String>)newParam).value = "";
+            if (parameter.getType() instanceof ToiTypeSTRING) {
+
+                final ToiParameter<String> stringParam = (ToiParameter<String>)newParam;
+
+                if (stringParam.getValue() == null) {
+                    stringParam.setValue("");
                 }
-                ((Parameter<String>)newParam).value += "-";
+                stringParam.setValue(stringParam.getValue() + "-");
             }
-            else if (parameter.type instanceof TypeNumberBase) {
-                ((Parameter<Number>)newParam).value = count++;
+            else if (parameter.getType() instanceof ToiTypeNumber) {
+                ((ToiParameter<Number>)newParam).setValue(count++);
             }
-            else if (parameter.type instanceof TypeDictionary) {
-//                newParam.value = new HashMap<>();
-
-                if (((TypeDictionary)parameter.type).value instanceof TypeNumber) {
-
-                    ((HashMap<String, Number>)newParam
-                            .value).put("rnd", Math.random() * 1024);
-                }
-
-
-//                System.out.println(":: " + parameter.type.getClass().getName());
-            }
+//            else if (parameter.type instanceof TypeDictionary) {
+////                newParam.value = new HashMap<>();
+//
+//                if (((TypeDictionary)parameter.type).value instanceof TypeNumber) {
+//
+//                    ((HashMap<String, Number>)newParam
+//                            .value).put("rnd", Math.random() * 1024);
+//                }
+//
+//
+////                System.out.println(":: " + parameter.type.getClass().getName());
+//            }
 
 //            parameter.dump();
 
-            newParam.type = null;
             toui.update(newParam);
 
         } else {
@@ -126,25 +119,25 @@ public class TOUIClientTest implements Add, Remove, Update {
     //------------------------------------------------------------
     //
     @Override
-    public void added(final Parameter<?> _value) {
+    public void added(final ToiParameter<?> _value) {
 
-        System.out.println("client: added: " + _value.id);
+        System.out.println("client: added: " + _value.getId());
 //        toui.dumpCache();
         _value.dump();
     }
 
     @Override
-    public void updated(final Parameter<?> _value) {
+    public void updated(final ToiParameter<?> _value) {
 
-        System.out.println("client: updated: " + _value.id);
+        System.out.println("client: updated: " + _value.getId());
 //        toui.dumpCache();
         _value.dump();
     }
 
     @Override
-    public void removed(final Parameter<?> _value) {
+    public void removed(final ToiParameter<?> _value) {
 
-        System.out.println("client: removed: " + _value.id);
+        System.out.println("client: removed: " + _value.getId());
 //        toui.dumpCache();
         _value.dump();
     }

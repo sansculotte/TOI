@@ -15,8 +15,9 @@
  */
 package com.io.toui.test.netty;
 
-import com.io.toui.model.ITOUISerializer;
-import com.io.toui.model.Packet;
+import com.io.toui.model.ToiPacket;
+import com.io.toui.model.exceptions.ToiUnsupportedFeatureException;
+import io.kaitai.struct.KaitaiStream;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -27,10 +28,7 @@ import java.util.List;
 
 public class TOUIPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
-    private final ITOUISerializer serializer;
-
-    public TOUIPacketDecoder(final ITOUISerializer _serializer) {
-        serializer = _serializer;
+    public TOUIPacketDecoder() {
     }
 
     @Override
@@ -61,8 +59,14 @@ public class TOUIPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
             data = msg.toString(Charset.defaultCharset()).getBytes();
         }
 
-        Packet<?> packet = serializer.deserialize(data);
+        try {
+            final ToiPacket packet = ToiPacket.parse(new KaitaiStream(data));
+            out.add(packet);
+        }
+        catch (final ToiUnsupportedFeatureException _e) {
+            throw new Exception(_e);
+        }
 
-        out.add(packet);
+
     }
 }

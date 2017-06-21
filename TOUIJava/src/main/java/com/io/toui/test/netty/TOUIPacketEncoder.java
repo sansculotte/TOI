@@ -15,28 +15,24 @@
  */
 package com.io.toui.test.netty;
 
-import com.io.toui.model.ITOUISerializer;
-import com.io.toui.model.Packet;
+import com.io.toui.model.ToiPacket;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
 import java.util.List;
 
-public class TOUIPacketEncoder extends MessageToMessageEncoder<Packet<?>> {
+public class TOUIPacketEncoder extends MessageToMessageEncoder<ToiPacket> {
 
-    private final ITOUISerializer serializer;
 
-    public TOUIPacketEncoder(final ITOUISerializer _serializer) {
-        serializer = _serializer;
+    public TOUIPacketEncoder() {
     }
 
     @Override
     protected void encode(
-            final ChannelHandlerContext ctx, final Packet<?> msg, final List<Object> out) throws
+            final ChannelHandlerContext ctx, final ToiPacket msg, final List<Object> out) throws
                                                                                           Exception {
 
-
-        out.add(Unpooled.wrappedBuffer(serializer.serialize(msg)));
+        out.add(Unpooled.wrappedBuffer(ToiPacket.serialize(msg)));
     }
 }

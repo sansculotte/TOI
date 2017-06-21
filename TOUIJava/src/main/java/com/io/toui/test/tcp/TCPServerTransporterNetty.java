@@ -33,8 +33,6 @@ public final class TCPServerTransporterNetty implements ITransporter {
 
     private ITransporterListener   listener;
 
-    public  Class<ITOUISerializer> serializerClass;
-
     public TCPServerTransporterNetty(final int _port) throws InterruptedException {
 
         final ServerBootstrap bootstrap = new ServerBootstrap();
@@ -78,6 +76,13 @@ public final class TCPServerTransporterNetty implements ITransporter {
     }
 
     @Override
+    public void received(final ToiPacket _packet) {
+        if (listener != null) {
+            listener.received(_packet);
+        }
+    }
+
+    @Override
     public void send(final byte[] _data) {
 
         if (lastCtx != null) {
@@ -88,7 +93,7 @@ public final class TCPServerTransporterNetty implements ITransporter {
     }
 
     @Override
-    public void send(final Packet<?> _packet) {
+    public void send(final ToiPacket _packet) {
         // TODO
     }
 
@@ -98,15 +103,4 @@ public final class TCPServerTransporterNetty implements ITransporter {
         listener = _listener;
     }
 
-    @Override
-    public void setSerializer(final Class<ITOUISerializer> _serializerClass) {
-
-        serializerClass = _serializerClass;
-    }
-
-    @Override
-    public Class<ITOUISerializer> getSerializer() {
-
-        return serializerClass;
-    }
 }

@@ -83,7 +83,7 @@ public class UDPClientTransporter extends Thread implements ITransporter {
     }
 
     @Override
-    public void send(final Packet<?> _packet) {
+    public void send(final ToiPacket _packet) {
         // TODO
     }
 
@@ -94,21 +94,17 @@ public class UDPClientTransporter extends Thread implements ITransporter {
     }
 
     @Override
-    public void setSerializer(final Class<ITOUISerializer> _serializerClass) {
-
-    }
-
-    @Override
-    public Class<ITOUISerializer> getSerializer() {
-
-        return null;
-    }
-
-    @Override
     public void received(final byte[] _data) {
 
         if (listener != null) {
             listener.received(_data);
+        }
+    }
+
+    @Override
+    public void received(final ToiPacket _packet) {
+        if (listener != null) {
+            listener.received(_packet);
         }
     }
 }

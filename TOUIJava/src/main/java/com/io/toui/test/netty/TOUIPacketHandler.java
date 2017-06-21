@@ -15,19 +15,27 @@
  */
 package com.io.toui.test.netty;
 
-import com.io.toui.model.Packet;
+import com.io.toui.model.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-/**
- * Echoes uppercase content of text frames.
- */
-public class TOUIPacketHandler extends SimpleChannelInboundHandler<Packet<?>> {
+public class TOUIPacketHandler extends SimpleChannelInboundHandler<ToiPacket> {
+
+    private final ITransporterListener listener;
+
+    public TOUIPacketHandler(final ITransporterListener _listener) {
+        listener = _listener;
+    }
 
     @Override
-    protected void channelRead0(final ChannelHandlerContext ctx, final Packet<?> msg) throws
+    protected void channelRead0(final ChannelHandlerContext ctx, final ToiPacket toiPacket) throws
                                                                                       Exception {
 
-        System.out.println("got packet: " + msg);
+        System.out.println("got packet: " + toiPacket);
+
+        if (listener != null) {
+            listener.received(toiPacket);
+        }
+
     }
 }

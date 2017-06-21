@@ -1,20 +1,14 @@
 package com.io.toui.test;
 
+import com.io.toui.model.*;
 import com.io.toui.model.ICommands.Update;
-import com.io.toui.model.Parameter;
-import com.io.toui.model.TOUIServer;
 import com.io.toui.model.types.*;
-import com.io.toui.test.serializer.JsonSerializer;
 import com.io.toui.test.websocket.server.WebsocketServerTransporterNetty;
 
 import java.io.IOException;
 import java.security.cert.CertificateException;
-import java.util.HashMap;
 
-/**
- * Created by inx on 29/11/16.
- */
-public class TOUIServerTest implements Update {
+public class TOUIServerTest implements Update, ICommands.Init {
 
     //------------------------------------------------------------
     //
@@ -56,89 +50,99 @@ public class TOUIServerTest implements Update {
     //
     private final TOUIServer toui;
 
-    private final Parameter<Number> theValueLong;
+//    private final ToiParameter<Number> theValueLong;
+//
+    private final ToiParameter<String> theValueString;
 
-    private final Parameter<String> theValueString;
+    private final ToiParameter<Double> theValueDouble;
+//
+    private final ToiParameter<Integer> theValueInt;
 
-    private final Parameter<Number> theValueDouble;
+    private final ToiParameter<Boolean> theValueBool;
+//
+//    private final ToiParameter<HashMap<String, Number>> theValueMap;
 
-    private final Parameter<Number> theValueInt;
-
-    private final Parameter<HashMap<String, Number>> theValueMap;
-
-    private int counter = 0;
+    private int counter;
 
     //------------------------------------------------------------
     //
     public TOUIServerTest() throws IOException, CertificateException, InterruptedException {
 
-        // create serializer and transporter
-        final JsonSerializer serializer = new JsonSerializer();
 
 //        final UDPServerTransporter transporter = new UDPServerTransporter(8181);
 //        transporter.setTargetPort(61187);
 
 //        final TCPServerTransporter transporter = new TCPServerTransporter(8888);
 //        final WebsocketServerTransporter transporter = new WebsocketServerTransporter(8181);
-        final WebsocketServerTransporterNetty transporter = new WebsocketServerTransporterNetty(8181);
+        final WebsocketServerTransporterNetty transporter = new WebsocketServerTransporterNetty
+                (10000);
 
         // create toui
-        toui = new TOUIServer(serializer, transporter);
+        toui = new TOUIServer(transporter);
         toui.setUpdateListener(this);
+        toui.setInitListener(this);
 
         // create values
-        theValueLong = new Parameter<>("1", new TypeNumber());
-        theValueLong.value = 123L;
-        theValueLong.description = "long";
+//        theValueLong = new ToiParameter<>("1", new TypeNumber());
+//        theValueLong.value = 123L;
+//        theValueLong.description = "long";
+//
+        theValueString = new ToiParameter<>(1, new ToiTypeSTRING());
+        theValueString.setValue("oi. jep updates kommen. jeder char einzeln?? oder hast du " +
+                               "tatsächlich nach jedem tip enter gedrückt?");
+        theValueString.setDescription("test description 2");
+        theValueString.setLabel("labeling");
+        theValueString.setUserdata("some user data?".getBytes());
 
-        theValueString = new Parameter<>("2", new TypeString());
-        theValueString.value = "oi. jep updates kommen. jeder char einzeln?? oder hast du " +
-                               "tatsächlich nach jedem tip enter gedrückt?";
-        theValueString.description = "test description 2";
-        theValueString.label = "labeling";
-        theValueString.userdata = "some user data?";
+        theValueDouble = new ToiParameter<>(2, new ToiTypeFLOAT64(0.D, 10.D));
+        theValueDouble.setLabel("a double");
+        theValueDouble.setDescription("double description");
+        theValueDouble.setValue(3.14);
 
-        theValueDouble = new Parameter<>("3", new TypeNumber());
-        theValueDouble.value = 3.1415926535897932384626433832795028841971693993751D;
-        theValueDouble.description = "pi";
 
-        theValueInt = new Parameter<>("4", new TypeNumber());
-        theValueInt.value = 3;
-        theValueInt.description = "int";
+        theValueInt = new ToiParameter<>(3, new ToiTypeINT32());
+        theValueInt.setLabel("INT LABEL");
+        theValueInt.setValue(333);
 
-        TypeNumber dictValue = new TypeNumber();
-        dictValue.setMin(0);
-        dictValue.setMax(10);
-        dictValue.setStep(2);
 
-        theValueMap = new Parameter<>("dict", new TypeDictionary<>(dictValue));
-//        theValueMap.value = new HashMap<>();
-        theValueMap.value.put("key1", 123);
-        theValueMap.description = "a dictionary";
+        theValueBool = new ToiParameter<>(4, new ToiTypeBOOL());
+        theValueBool.setLabel("toggle button");
+        theValueBool.setValue(true);
 
-        // added values to toui
-        toui.add(theValueLong);
+//        TypeNumber dictValue = new TypeNumber();
+//        dictValue.setMin(0);
+//        dictValue.setMax(10);
+//        dictValue.setStep(2);
+
+//        theValueMap = new ToiParameter<>("dict", new TypeDictionary<>(dictValue));
+////        theValueMap.value = new HashMap<>();
+//        theValueMap.value.put("key1", 123);
+//        theValueMap.description = "a dictionary";
+//
+//        // added values to toui
+//        toui.add(theValueLong);
         toui.add(theValueString);
         toui.add(theValueDouble);
         toui.add(theValueInt);
-//        toui.add(theValueMap);
-
-        toui.operateOnCache(valueCache -> {});
+        toui.add(theValueBool);
+////        toui.add(theValueMap);
+//
+//        toui.operateOnCache(valueCache -> {});
     }
 
     public void updateVar1() {
 
-        Parameter<Number> newVal = theValueLong.cloneEmpty();
-        newVal.value = theValueLong.value.longValue() + 1;
-
-        toui.update(newVal);
+//        ToiParameter<Number> newVal = theValueLong.cloneEmpty();
+//        newVal.value = theValueLong.value.longValue() + 1;
+//
+//        toui.update(newVal);
     }
 
     public void updateVar2() {
-        Parameter<String> newVal = theValueString.cloneEmpty();
-
-        newVal.value = "content: " + counter++;
-        toui.update(newVal);
+//        ToiParameter<String> newVal = theValueString.cloneEmpty();
+//
+//        newVal.value = "content: " + counter++;
+//        toui.update(newVal);
     }
 
     public void dumpCache() {
@@ -147,9 +151,9 @@ public class TOUIServerTest implements Update {
     //------------------------------------------------------------
     //
     @Override
-    public void updated(final Parameter<?> _value) {
+    public void updated(final ToiParameter<?> _value) {
         // updated from client
-        System.out.println("server: updated: " + _value.id + " : " + _value.value);
+        System.out.println("server: updated: " + _value.getId() + " : " + _value.getValue());
 
         // lookup value and updated it
 
@@ -157,5 +161,17 @@ public class TOUIServerTest implements Update {
         toui.update(_value);
 
         toui.dumpCache();
+    }
+
+    @Override
+    public void init() {
+
+//        System.out.println("add another value");
+//
+//        ToiParameter<Boolean> boolVal = new ToiParameter<>(12, new ToiTypeBOOL());
+//        boolVal.setDescription("a boolean value to test");
+//        boolVal.setLabel("boolean label");
+//
+//        toui.add(boolVal);
     }
 }

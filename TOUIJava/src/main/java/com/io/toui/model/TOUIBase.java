@@ -1,8 +1,10 @@
 package com.io.toui.model;
 
 import com.io.toui.model.ICommands.Update;
+import com.io.toui.model.ToiTypes.TouiCommands;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,11 +15,9 @@ public abstract class TOUIBase implements ITransporterListener {
 
     //------------------------------------------------------------
     //
-    protected ITOUISerializer serializer;
-
     protected ITransporter transporter;
 
-    private final Map<String, Parameter<?>> valueCache = new ConcurrentHashMap<>();
+    private final Map<Integer, ToiParameter<?>> valueCache = new ConcurrentHashMap<>();
 
     // callback objects
     protected Update updateListener;
@@ -26,21 +26,9 @@ public abstract class TOUIBase implements ITransporterListener {
 
     //------------------------------------------------------------
     //
-    public TOUIBase(final ITOUISerializer _ser, final ITransporter _trans) {
+    public TOUIBase(final ITransporter _trans) {
 
-        serializer = _ser;
         _setTransporter(_trans);
-    }
-
-    //------------------------------------------------------------
-    //
-    public void setSerializer(final ITOUISerializer _serializer) {
-
-        serializer = _serializer;
-
-        if (transporter != null) {
-            transporter.setSerializer((Class<ITOUISerializer>)serializer.getClass());
-        }
     }
 
     public void setTransporter(final ITransporter _transporter) {
@@ -54,11 +42,10 @@ public abstract class TOUIBase implements ITransporterListener {
 
         if (transporter != null) {
             transporter.setListener(this);
-            transporter.setSerializer((Class<ITOUISerializer>)serializer.getClass());
         }
     }
 
-    public Map<String, Parameter<?>> getValueCache() {
+    public Map<Integer, ToiParameter<?>> getValueCache() {
         return Collections.unmodifiableMap(valueCache);
     }
 
@@ -69,7 +56,6 @@ public abstract class TOUIBase implements ITransporterListener {
         updateListener = _listener;
     }
 
-
     //------------------------------------------------------------
     //
     /**
@@ -78,14 +64,14 @@ public abstract class TOUIBase implements ITransporterListener {
      * @param _value
      *      the value to updated
      */
-    public void update(final Parameter<?> _value) {
+    public void update(final ToiParameter<?> _value) {
 
         // updated valuecache
-        if (valueCache.containsKey(_value.id)) {
+        if (valueCache.containsKey((int)_value.getId())) {
             // get cached value
-            final Parameter<?> desc = valueCache.get(_value.id);
+            final ToiParameter<?> parameter = valueCache.get((int)_value.getId());
 
-            desc.update(_value);
+            parameter.update(_value);
         }
         else {
             System.out.println("value not in cache - ignore");
@@ -94,8 +80,8 @@ public abstract class TOUIBase implements ITransporterListener {
         if (transporter != null) {
 
             // transport value
-            final Packet packet = new Packet(ICommands.UPDATE, _value, 0L, null);
-            transporter.send(serializer.serialize(packet));
+            final ToiPacket packet = new ToiPacket(TouiCommands.UPDATE, _value);
+            transporter.send(packet);
         }
     }
 

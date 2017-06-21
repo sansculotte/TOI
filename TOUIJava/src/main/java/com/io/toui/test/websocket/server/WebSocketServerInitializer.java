@@ -15,9 +15,8 @@
  */
 package com.io.toui.test.websocket.server;
 
-import com.io.toui.test.netty.TOUIPacketDecoder;
-import com.io.toui.test.netty.TOUIPacketHandler;
-import com.io.toui.test.serializer.TOUISerializerFactory;
+import com.io.toui.model.ToiPacket;
+import com.io.toui.test.netty.*;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -37,11 +36,12 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
 
     private final SslContext sslCtx;
 
-    TOUISerializerFactory serializerFactory = new TOUISerializerFactory();
+    private final WebsocketServerTransporterNetty listener;
 
-    public WebSocketServerInitializer(final SslContext sslCtx) {
+    public WebSocketServerInitializer(final SslContext sslCtx, final WebsocketServerTransporterNetty listener) {
 
         this.sslCtx = sslCtx;
+        this.listener = listener;
     }
 
     @Override
@@ -54,28 +54,8 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new WebSocketServerCompressionHandler());
-        pipeline.addLast(new WebSocketServerProtocolHandler("/", null, true) {
-
-            @Override
-            public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws
-                                                                                       Exception {
-
-                super.channelRead(ctx, msg);
-            }
-
-            @Override
-            protected void decode(
-                    final ChannelHandlerContext ctx,
-                    final WebSocketFrame frame,
-                    final List<Object> out) throws Exception {
-
-                System.out.println("decode");
-
-                super.decode(ctx, frame, out);
-            }
-        });
+        pipeline.addLast(new WebSocketServerProtocolHandler("/", null, true));
         //        pipeline.addLast(new WebSocketIndexPageHandler(WEBSOCKET_PATH));
-//        pipeline.addLast(new Websocket)
 
         pipeline.addLast(new MessageToMessageDecoder<WebSocketFrame>() {
 
@@ -85,14 +65,74 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
                     final WebSocketFrame msg,
                     final List<Object> out) throws Exception {
 
-                System.out.println("received: " + msg);
-
                 out.add(msg.content().retain());
             }
         });
 
-        pipeline.addLast(new TOUIPacketDecoder(serializerFactory.createSerializer()));
-        pipeline.addLast(new TOUIPacketHandler());
+        pipeline.addLast(new TOUIPacketDecoder());
+//        pipeline.addLast(new TOUIPacketHandler(listener) {
+//
+//
+//
+//
+//            @Override
+//            protected void channelRead0(
+//                    final ChannelHandlerContext ctx, final ToiPacket toiPacket) throws Exception {
+//
+//                listener.received(ctx, toiPacket);
+//                listener.done(ctx);
+//            }
+//        });
+
+        pipeline.addLast(new SimpleChannelInboundHandler<ToiPacket>() {
+
+            @Override
+            public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+
+                if (listener != null) {
+                    listener.addChannel(ctx.channel());
+                }
+                super.channelActive(ctx);
+            }
+
+            @Override
+            public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+
+                if (listener != null) {
+                    listener.removeChannel(ctx.channel());
+                }
+                super.channelInactive(ctx);
+            }
+
+            @Override
+            protected void channelRead0(final ChannelHandlerContext ctx, final ToiPacket toiPacket) throws
+                                                                                              Exception {
+
+                if (listener != null) {
+                    listener.received(toiPacket);
+                    listener.done(ctx);
+                }
+            }
+
+            @Override
+            public void exceptionCaught(
+                    final ChannelHandlerContext ctx,
+                    final Throwable cause) throws Exception {
+
+                System.out.println("::::::");
+                cause.printStackTrace();
+            }
+        });
+
+
+        pipeline.addLast(new BinaryWebSocketFrameEncoder());
+        pipeline.addLast(new StringTextWebSocketFrameEncoder());
+        pipeline.addLast(new ByteArrayTextWebSocketFrameEncoder());
+        pipeline.addLast(new TOUIPacketEncoder());
+
+
+
+
 
         //        pipeline.addLast(new StringDecoder());
         //        pipeline.addLast(new SimpleChannelInboundHandler<String>() {
