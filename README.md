@@ -24,6 +24,10 @@ draft...
 
 The format is using big endian
 
+## Framing
+
+TODO
+
 ## Types
 
 - tiny-string: prefixed with size [1-byte] followed by [UTF-8 string-data]
