@@ -30,19 +30,19 @@ TODO
 
 ## Types
 
-- tiny-string: prefixed with size [1-byte] followed by [UTF-8 string-data]
-- short-string: prefixed with size [2-byte] followed by [UTF-8 string-data]
-- long-string: prefixed with size [4-byte] followed by [UTF-8 string-data]
+- tiny-string: prefixed with size [uint8] followed by [UTF-8 string-data]
+- short-string: prefixed with size [uint16] followed by [UTF-8 string-data]
+- long-string: prefixed with size [uint32] followed by [UTF-8 string-data]
 
 ## Package
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| **command** | - | 1 byte | - | n | command of package |
-| id | 0x10(16) | 4 byte | 0 | y | optional packet id |
-| timestamp | 0x11(17) | 8 byte | 0 | y | optional timestamp |
+| **command** | - | uint8 | - | n | command of package |
+| id | 0x10(16) | uint32 | 0 | y | optional packet id |
+| timestamp | 0x11(17) | uint64 | 0 | y | optional timestamp |
 | data | 0x12(18) | - | - | y | package data. type depends on command |
-| **terminator** | 0 | 1 byte | 0 | n | package terminator |
+| **terminator** | 0 | uint8 | 0 | n | package terminator |
 
 note: we may want to send id/timestamp before the data, to decide if packet is valid (udp case), prefix the value with data-id. otherwise we need to parse data to get to id/timestamp
 
@@ -89,14 +89,14 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| **id** | - | 4 byte | 0 | n | unique identifier
+| **id** | - | uint32 | 0 | n | unique identifier
 | **type** |	- | TypeDefinition | - | n | typedefinition of value
 | value | 0x20 (32) | known from typedefinition | ? | y |	value (length is known by type!)
 | label | 0x21 (33)	| tiny-string | "" | y | Human readable identifier
 | desc | 0x22 (34) | short-string | "" | y | can be shown as a tooltip
 | order | 0x23 (35)	|	int32 | 0 | y | allows for most simple layout
 | widget | 0x24 (36) | widget data | text-input-widget | y | if not specified a default widget is used
-| userdata | 0x25 (37) | size of value (32bit) followed by userdata | - | y | various user-data. e.g.: metadata, tags, ...
+| userdata | 0x25 (37) | size of value (uint32) followed by userdata | - | y | various user-data. e.g.: metadata, tags, ...
 | terminator | 0 | 1 byte | 0 | n | terminator
 
 
@@ -105,10 +105,10 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| **type-id** | - |  1-byte (see type-table) | 0x2f | n | type of value
-| default | 0x30 (48) | defined by type-ud | depending on type | y | default data
+| **type-id** | - |  uint8 (see type-table) | 0x2f | n | type of value
+| default | 0x30 (48) | defined by type-id | depending on type | y | default data
 | ... type options... | | ||||
-| **terminator** | 0 | 1 byte | 0 | n | terminator
+| **terminator** | 0 | uint8 | 0 | n | terminator
 
 
 ### type-table: (1byte)
@@ -175,7 +175,7 @@ a 1-byte value. 0 == false, >0 == true
 | min | 0x31 (49) | of type | 0 | y | min value
 | max | 0x32 (50) | of type | 0 | y | max value
 | multipleof | 0x33 (51) | of type | 0 | y | multiple of value
-| scale | 0x34 (52) | 1 byte | 0 | < | one of these (0x00, 0x01, 0x02)
+| scale | 0x34 (52) | uint8 | 0 | < | one of these (0x00, 0x01, 0x02)
 | unit | 0x35 (53) | tiny-string | "" | y | the unit of value
 
 ## Typedefinition Vector (Vector2f32, Vector2i8, Vector4f32, ...):
@@ -189,7 +189,7 @@ where Y specifies the type
 | min | 0x31 (49) | X times type | 0 | y | min value
 | max | 0x32 (50) | X times type | 0 | y | max value
 | multipleof | 0x33 (51) | X times type | 0 | y | multiple of value
-| scale | 0x34 (52) | 1 byte | 0 | < | one of these (0x00, 0x01, 0x02)
+| scale | 0x34 (52) | uint8 | 0 | < | one of these (0x00, 0x01, 0x02)
 | unit | 0x35 (53) | tiny-string | "" | y | the unit of value
 
 ### scale table
@@ -208,26 +208,26 @@ a long-string. 32bit size-prefixed UTF-8 string
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| entries | 0x31 (49) | 16bit number of followed by tiny-strings | 0 | y | list of enumerations
+| entries | 0x31 (49) | uint16 number followed by <number> tiny-strings | 0 | y | list of enumerations
 
 ## Typedefinition Array
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| subtype | 0x31(49) | TypeDefinition | Type String | y | TypeDefintion of array elements
+| subtype | 0x31(49) | TypeDefinition | StringType | y | TypeDefintion of array elements
 
 
 ## Widget (0x24):
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| type | 0x50 (80) | 2 byte | text input | y | type of widget.  see widget type-table
-| enabled | 0x51 (81) | 1 byte | true | y | if widget allows user input
-| visible | 0x52 (82) |	1 byte | true | y | if widget is visible
-| label-visible | 0x53	(83) | 1 byte | true | y | if label is visible
-| value-visible | 0x54 (84) | 1 byte | true | y | if value is visible
-| label-position | 0x55 (85) | 1 byte | 0 | y | see label-position table
-| **terminator** | 0 | 1 byte | 0 | n | terminator
+| type | 0x50 (80) | uint16 | text input | y | type of widget.  see widget type-table
+| enabled | 0x51 (81) | uint8 | true | y | if widget allows user input
+| visible | 0x52 (82) |	uint8 | true | y | if widget is visible
+| label-visible | 0x53	(83) | uint8 | true | y | if label is visible
+| value-visible | 0x54 (84) | uint8 | true | y | if value is visible
+| label-position | 0x55 (85) | uint8 | 0 | y | see label-position table
+| **terminator** | 0 | uint8 | 0 | n | terminator
 
 ### Widget type table:
 
