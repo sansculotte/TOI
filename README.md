@@ -166,7 +166,9 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 
 ## Typedefinition Boolean:
 
-a 1-byte value. 0 == false, >0 == true
+uint8 value:
+- 0 == false
+- >0 == true
 
 ## Typedefinition Number (uint8, int8, uint16, int16, ...):
 
@@ -181,7 +183,9 @@ a 1-byte value. 0 == false, >0 == true
 ## Typedefinition Vector (Vector2f32, Vector2i8, Vector4f32, ...):
 
 VectorXY
+
 where X specifies the size
+
 where Y specifies the type
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
@@ -207,6 +211,7 @@ a long-string. 32bit size-prefixed UTF-8 string
 ## Typedefinition Color
 
 RGB8, RGBA8, ARGB8, BGR8, BGRA8, ABGR8: no additional options.
+
 TODO: specify what channel is where
 
 ## Typedefinition Enum
