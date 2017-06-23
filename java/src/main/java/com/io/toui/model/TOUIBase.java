@@ -1,7 +1,7 @@
 package com.io.toui.model;
 
 import com.io.toui.model.ICommands.Update;
-import com.io.toui.model.ToiTypes.TouiCommands;
+import com.io.toui.model.ToiTypes.Command;
 
 import java.util.Collections;
 import java.util.Map;
@@ -80,7 +80,7 @@ public abstract class TOUIBase implements ITransporterListener {
         if (transporter != null) {
 
             // transport value
-            final ToiPacket packet = new ToiPacket(TouiCommands.UPDATE, _value);
+            final ToiPacket packet = new ToiPacket(Command.UPDATE, _value);
             transporter.send(packet);
         }
     }

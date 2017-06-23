@@ -1,10 +1,10 @@
 package com.io.toui.model;
 
-import com.io.toui.model.ToiTypes.TouiCommands;
-import com.io.toui.model.types.ToiTypeINT16;
-import io.kaitai.struct.KaitaiStream;
+import com.io.toui.model.ToiTypes.Command;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 import com.io.toui.model.exceptions.ToiUnsupportedFeatureException;
+import com.io.toui.model.types.ToiTypeINT16;
+import io.kaitai.struct.KaitaiStream;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -16,8 +16,7 @@ import java.nio.charset.Charset;
 public class ToiParser {
 
     public static void writeTinyString(
-            final String _string,
-            final OutputStream _outputStream) throws IOException {
+            final String _string, final OutputStream _outputStream) throws IOException {
 
         final byte[] bytes = _string.getBytes(Charset.forName("UTF-8"));
 
@@ -32,8 +31,7 @@ public class ToiParser {
     }
 
     public static void writeShortString(
-            final String _string,
-            final OutputStream _outputStream) throws IOException {
+            final String _string, final OutputStream _outputStream) throws IOException {
 
         final byte[] bytes = _string.getBytes(Charset.forName("UTF-8"));
 
@@ -48,15 +46,9 @@ public class ToiParser {
     }
 
     public static void writeLongString(
-            final String _string,
-            final OutputStream _outputStream) throws IOException {
+            final String _string, final OutputStream _outputStream) throws IOException {
 
         final byte[] bytes = _string.getBytes(Charset.forName("UTF-8"));
-
-        if (bytes.length > Integer.MAX_VALUE) {
-            // TODO log error
-            System.err.println("unit string is too long for long string");
-        }
 
         // write length
         _outputStream.write(ByteBuffer.allocate(4).putInt(bytes.length).array());
@@ -71,7 +63,8 @@ public class ToiParser {
 
         final KaitaiStream _io = new KaitaiStream(fileName);
 
-        _io.ensureFixedContents(ToiPacket.TOI_MAGIC);
+        // we read from a file: no magic expected
+        //        _io.ensureFixedContents(ToiPacket.TOI_MAGIC);
 
         // got magic parse packet
         final ToiPacket packet = ToiPacket.parse(_io);
@@ -82,22 +75,28 @@ public class ToiParser {
     public static void main(final String[] args) {
 
         try {
-            //            ToiPacket packet = fromFile
-            // ("/Users/inx/Documents/_toui/packet_s8_no_user.toi");
-//            final ToiPacket packet = fromFile("/Users/inx/Documents/_toui/packet_u32_no_user.toi");
-            final ToiPacket packet = fromFile("/Users/inx/Documents/_toui/_generated.toi");
+
+            final ToiPacket packet = fromFile(
+                    "/Users/inx/Documents/_github/TOI/example-data/packet_bool_no_user.toi");
+            //            final ToiPacket packet = fromFile
+            // ("/Users/inx/Documents/_github/TOI/example-data/packet_lstr_no_user.toi");
+            //            final ToiPacket packet = fromFile
+            // ("/Users/inx/Documents/_github/TOI/example-data/packet_s8_no_user.toi");
+            //            final ToiPacket packet = fromFile
+            // ("/Users/inx/Documents/_github/TOI/example-data/packet_u32_no_user.toi");
+            //            final ToiPacket packet = fromFile
+            // ("/Users/inx/Documents/_github/TOI/example-data/packet_init.toi");
 
             System.out.println(packet.getCmd());
 
-
-            // create a
-            ToiPacket newP = new ToiPacket(TouiCommands.UPDATE);
+            // create a packet
+            final ToiPacket newP = new ToiPacket(Command.UPDATE);
             newP.setTimestamp(1234);
 
-            ToiParameter<Short> param = new ToiParameter<>(12,
-                                                       new ToiTypeINT16((short)33,
-                                                                        (short)10,
-                                                                        (short)100));
+            final ToiParameter<Short> param = new ToiParameter<>(12,
+                                                                 new ToiTypeINT16((short)33,
+                                                                                  (short)10,
+                                                                                  (short)100));
 
             param.setLabel("a short value");
             param.setDescription("longer description");
@@ -110,18 +109,15 @@ public class ToiParser {
 
                 newP.write(os);
 
-                byte[] the_bytes = os.toByteArray();
+                final byte[] the_bytes = os.toByteArray();
 
-                try(OutputStream fs = new FileOutputStream
+                try (OutputStream fs = new FileOutputStream
                         ("/Users/inx/Documents/_toui/_generated" +
-                                                           ".toi")) {
+                                                            ".toi")) {
 
                     os.writeTo(fs);
                 }
             }
-
-
-
 
         }
         catch (IOException | ToiDataErrorExcpetion | ToiUnsupportedFeatureException _e) {

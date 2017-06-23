@@ -1,8 +1,7 @@
 package com.io.toui.model.types;
 
 import com.io.toui.model.ToiTypeDefinition;
-import com.io.toui.model.ToiTypes.TouiDatatypes;
-import com.io.toui.model.ToiTypes.TouiTypedef;
+import com.io.toui.model.ToiTypes.*;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 import io.kaitai.struct.KaitaiStream;
 
@@ -22,10 +21,17 @@ public class ToiTypeFLOAT32 extends ToiTypeNumber<Float> {
         // parse optionals
         while (true) {
 
-            final TouiTypedef dataid = TouiTypedef.byId(_io.readU1());
+            int          did    = _io.readU1();
+
+            if (did == Packet.TERMINATOR.id()) {
+                // terminator
+                break;
+            }
+
+            final TypeNumber dataid = TypeNumber.byId(did);
 
             if (dataid == null) {
-                break;
+                throw new ToiDataErrorExcpetion();
             }
 
             switch (dataid) {
@@ -53,7 +59,7 @@ public class ToiTypeFLOAT32 extends ToiTypeNumber<Float> {
     }
 
     public ToiTypeFLOAT32() {
-        super(TouiDatatypes.FLOAT32);
+        super(Datatype.FLOAT32);
     }
 
     @Override
@@ -65,5 +71,11 @@ public class ToiTypeFLOAT32 extends ToiTypeNumber<Float> {
     @Override
     public void writeValue(final Float _value, final OutputStream _outputStream) throws IOException {
         _outputStream.write(ByteBuffer.allocate(4).putFloat(_value).array());
+    }
+
+    @Override
+    public Float getTypeDefault() {
+
+        return 0.f;
     }
 }

@@ -1,7 +1,7 @@
 package com.io.toui.model;
 
-import com.io.toui.model.ToiTypes.TouiCommands;
-import com.io.toui.model.ToiTypes.TouiPacket;
+import com.io.toui.model.ToiTypes.Command;
+import com.io.toui.model.ToiTypes.Packet;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 import com.io.toui.model.exceptions.ToiUnsupportedFeatureException;
 import io.kaitai.struct.KaitaiStream;
@@ -29,7 +29,7 @@ public class ToiPacket implements ToiWritable {
                                                           ToiUnsupportedFeatureException,
                                                           ToiDataErrorExcpetion {
 
-        final TouiCommands cmd = TouiCommands.byId(_io.readU1());
+        final Command cmd = Command.byId(_io.readU1());
 
         if (cmd == null) {
             throw new ToiDataErrorExcpetion();
@@ -40,8 +40,14 @@ public class ToiPacket implements ToiWritable {
         // read packet options
         while (!_io.isEof()) {
 
-            int             did    = _io.readU1();
-            final TouiPacket dataid = TouiPacket.byId(did);
+            final int did = _io.readU1();
+
+            if (did == Packet.TERMINATOR.id()) {
+                // terminator
+                break;
+            }
+
+            final Packet dataid = Packet.byId(did);
 
             if (dataid == null) {
                 // wrong data id... skip whole packet?
@@ -54,7 +60,6 @@ public class ToiPacket implements ToiWritable {
                     if (packet.getData() != null) {
                         throw new ToiDataErrorExcpetion();
                     }
-
 
                     switch (cmd) {
                         case INIT:
@@ -75,10 +80,10 @@ public class ToiPacket implements ToiWritable {
                     }
 
                     break;
-                case PACKET_ID:
+                case ID:
                     packet.setPacketId(_io.readU4be());
                     break;
-                case PACKET_TIME:
+                case TIMESTAMP:
                     packet.setTimestamp(_io.readU8be());
                     break;
                 default:
@@ -91,7 +96,7 @@ public class ToiPacket implements ToiWritable {
     }
 
     //--------------------------------------------------------
-    private final TouiCommands cmd;
+    private final Command cmd;
 
     private Long packetId;
 
@@ -101,49 +106,57 @@ public class ToiPacket implements ToiWritable {
 
     //--------------------------------------------------------
     //--------------------------------------------------------
-    public ToiPacket(final TouiCommands _cmd) {
+    public ToiPacket(final Command _cmd) {
 
         this(_cmd, null);
     }
 
-    public ToiPacket(final TouiCommands _cmd, final ToiWritable _data) {
+    public ToiPacket(final Command _cmd, final ToiWritable _data) {
 
         cmd = _cmd;
         data = _data;
     }
 
     //--------------------------------------------------------
-    @Override
-    public void write(OutputStream _outputStream) throws IOException {
+    public void write(final boolean _magic, final OutputStream _outputStream) throws IOException {
 
-        // write magic
-        _outputStream.write(TOI_MAGIC);
+        if (_magic) {
+            // write magic
+            _outputStream.write(TOI_MAGIC);
+        }
+
+        write(_outputStream);
+    }
+
+
+    @Override
+    public void write(final OutputStream _outputStream) throws IOException {
 
         // write mandatory command
         _outputStream.write((int)cmd.id());
 
         if (packetId != null) {
-            _outputStream.write((int)TouiPacket.PACKET_ID.id());
+            _outputStream.write((int)Packet.ID.id());
             _outputStream.write(ByteBuffer.allocate(4).putInt(packetId.intValue()).array());
         }
 
         if (timestamp != null) {
-            _outputStream.write((int)TouiPacket.PACKET_TIME.id());
+            _outputStream.write((int)Packet.TIMESTAMP.id());
             _outputStream.write(ByteBuffer.allocate(8).putLong(timestamp).array());
         }
 
         if (data != null) {
-            _outputStream.write((int)TouiPacket.DATA.id());
+            _outputStream.write((int)Packet.DATA.id());
             data.write(_outputStream);
         }
 
-        // write terminator
-        _outputStream.write(0);
+        // finalize packet with terminator
+        _outputStream.write((int)Packet.TERMINATOR.id());
     }
 
     //--------------------------------------------------------
 
-    public TouiCommands getCmd() {
+    public Command getCmd() {
 
         return cmd;
     }

@@ -1,8 +1,7 @@
 package com.io.toui.model.types;
 
 import com.io.toui.model.ToiTypeDefinition;
-import com.io.toui.model.ToiTypes.TouiDatatypes;
-import com.io.toui.model.ToiTypes.TouiTypedef;
+import com.io.toui.model.ToiTypes.*;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 import io.kaitai.struct.KaitaiStream;
 
@@ -18,10 +17,17 @@ public class ToiTypeBOOL extends ToiTypeDefinition<Boolean> {
         // parse optionals
         while (true) {
 
-            final TouiTypedef dataid = TouiTypedef.byId(_io.readU1());
+            int          did    = _io.readU1();
+
+            if (did == Packet.TERMINATOR.id()) {
+                // terminator
+                break;
+            }
+
+            final TypeDefinition dataid = TypeDefinition.byId(did);
 
             if (dataid == null) {
-                break;
+                throw new ToiDataErrorExcpetion();
             }
 
             switch (dataid) {
@@ -41,7 +47,7 @@ public class ToiTypeBOOL extends ToiTypeDefinition<Boolean> {
 
     public ToiTypeBOOL() {
 
-        super(TouiDatatypes.BOOL);
+        super(Datatype.BOOL);
     }
 
     @Override
@@ -51,7 +57,22 @@ public class ToiTypeBOOL extends ToiTypeDefinition<Boolean> {
     }
 
     @Override
+    public void write(final OutputStream _outputStream) throws IOException {
+
+        super.write(_outputStream);
+
+        // finalize typedefinition with terminator
+        _outputStream.write((int)Packet.TERMINATOR.id());
+    }
+
+    @Override
     public void writeValue(final Boolean _value, final OutputStream _outputStream) throws IOException {
         _outputStream.write(_value ? 1 : 0);
+    }
+
+    @Override
+    public Boolean getTypeDefault() {
+
+        return false;
     }
 }

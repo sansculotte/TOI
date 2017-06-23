@@ -2,8 +2,9 @@ package com.io.toui.model.types;
 
 import com.io.toui.model.*;
 import com.io.toui.model.ToiTypes.LongString;
-import com.io.toui.model.ToiTypes.TouiDatatypes;
-import com.io.toui.model.ToiTypes.TouiTypedef;
+import com.io.toui.model.ToiTypes.Datatype;
+import com.io.toui.model.ToiTypes.Packet;
+import com.io.toui.model.ToiTypes.TypeDefinition;
 import io.kaitai.struct.KaitaiStream;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 
@@ -22,7 +23,7 @@ public class ToiTypeSTRING extends ToiTypeDefinition<String> {
         // parse optionals
         while (true) {
 
-            final TouiTypedef dataid = TouiTypedef.byId((long)_io.readU1());
+            final TypeDefinition dataid = TypeDefinition.byId(_io.readU1());
 
             if (dataid == null) {
                 break;
@@ -46,7 +47,7 @@ public class ToiTypeSTRING extends ToiTypeDefinition<String> {
 
     public ToiTypeSTRING() {
 
-        super(TouiDatatypes.LSTR);
+        super(Datatype.LSTR);
     }
 
     @Override
@@ -56,10 +57,23 @@ public class ToiTypeSTRING extends ToiTypeDefinition<String> {
     }
 
     @Override
+    public void write(final OutputStream _outputStream) throws IOException {
+
+        super.write(_outputStream);
+
+        // finalize typedefinition with terminator
+        _outputStream.write((int)Packet.TERMINATOR.id());
+    }
+
+    @Override
     public void writeValue(final String _value, final OutputStream _outputStream) throws
                                                                                   IOException {
-
         ToiParser.writeLongString(_value, _outputStream);
     }
 
+    @Override
+    public String getTypeDefault() {
+
+        return "";
+    }
 }

@@ -1,10 +1,9 @@
 package com.io.toui.model;
 
-import com.io.toui.model.ToiTypes.TouiDatatypes;
-import com.io.toui.model.ToiTypes.TouiTypedef;
+import com.io.toui.model.ToiTypes.*;
+import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 import com.io.toui.model.types.*;
 import io.kaitai.struct.KaitaiStream;
-import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -55,7 +54,7 @@ public abstract class ToiTypeDefinition<T> implements ToiWritable {
     public static ToiTypeDefinition<?> parse(final KaitaiStream _io) throws ToiDataErrorExcpetion {
 
         // read mandatory type
-        final TouiDatatypes typeid = TouiDatatypes.byId(_io.readU1());
+        final Datatype typeid = Datatype.byId(_io.readU1());
 
         if (typeid == null) {
             throw new ToiDataErrorExcpetion();
@@ -119,17 +118,18 @@ public abstract class ToiTypeDefinition<T> implements ToiWritable {
     }
 
     //------------------------------------------------------------
-    private final TouiDatatypes typeid;
+    private final Datatype typeid;
 
     private T defaultValue;
 
     //------------------------------------------------------------
-    public ToiTypeDefinition(final TouiDatatypes _typeid) {
+    public ToiTypeDefinition(final ToiTypes.Datatype _typeid) {
 
         typeid = _typeid;
     }
 
     public abstract ToiTypeDefinition<T> cloneEmpty();
+
 
     @Override
     public void write(final OutputStream _outputStream) throws IOException {
@@ -137,7 +137,7 @@ public abstract class ToiTypeDefinition<T> implements ToiWritable {
         _outputStream.write((int)typeid.id());
 
         if (defaultValue != null) {
-            _outputStream.write((int)TouiTypedef.DEFAULTVALUE.id());
+            _outputStream.write((int)TypeDefinition.DEFAULTVALUE.id());
             writeValue(defaultValue, _outputStream);
         }
     }
@@ -145,16 +145,25 @@ public abstract class ToiTypeDefinition<T> implements ToiWritable {
     public abstract void writeValue(final T _value, final OutputStream _outputStream) throws
                                                                                       IOException;
 
+    public abstract void update(ToiTypeDefinition<?> _othertype);
+
     //------------------------------------------------------------
-    public TouiDatatypes getTypeid() {
+    public Datatype getTypeid() {
 
         return typeid;
     }
 
     public T getDefaultValue() {
 
+        if (defaultValue == null) {
+            return getTypeDefault();
+        }
+
         return defaultValue;
     }
+
+    public abstract T getTypeDefault();
+
 
     public void setDefaultValue(final T _defaultValue) {
 

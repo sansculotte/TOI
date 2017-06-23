@@ -2,16 +2,13 @@ package com.io.toui.model;
 
 import com.io.toui.model.ICommands.Add;
 import com.io.toui.model.ICommands.Remove;
-import com.io.toui.model.ToiTypes.TouiCommands;
+import com.io.toui.model.ToiTypes.Command;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 import com.io.toui.model.exceptions.ToiUnsupportedFeatureException;
 import io.kaitai.struct.KaitaiStream;
 
 import java.io.IOException;
 
-/**
- * Created by inx on 30/11/16.
- */
 public class TOUIClient extends TOUIBase {
 
     // callback objects
@@ -53,7 +50,7 @@ public class TOUIClient extends TOUIBase {
 
         if (transporter != null) {
             // send to all clients
-            final ToiPacket packet = new ToiPacket(TouiCommands.INIT);
+            final ToiPacket packet = new ToiPacket(Command.INIT);
             transporter.send(packet);
         }
     }
@@ -82,13 +79,13 @@ public class TOUIClient extends TOUIBase {
             return;
         }
 
-        if ((_packet.getCmd() == TouiCommands.ADD) ||
-            (_packet.getCmd() == TouiCommands.UPDATE) ||
-            (_packet.getCmd() == TouiCommands.REMOVE)) {
+        if ((_packet.getCmd() == Command.ADD) ||
+            (_packet.getCmd() == Command.UPDATE) ||
+            (_packet.getCmd() == Command.REMOVE)) {
 
             _update(_packet);
         }
-        else if (_packet.getCmd() == TouiCommands.VERSION) {
+        else if (_packet.getCmd() == Command.VERSION) {
 
             // try to convert to version object
             System.out.println("version object yet to be specified");

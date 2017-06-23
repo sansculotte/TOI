@@ -32,7 +32,14 @@ public class ToiParameter<T> implements ToiWritable {
         while (true) {
 
             // get data-id
-            final TouiParameter dataid = TouiParameter.byId(_io.readU1());
+            int did = _io.readU1();
+
+            if (did == Packet.TERMINATOR.id()) {
+                // terminator
+                break;
+            }
+
+            final Parameter dataid = Parameter.byId(did);
 
             if (dataid == null) {
                 break;
@@ -42,7 +49,7 @@ public class ToiParameter<T> implements ToiWritable {
                 case VALUE:
                     System.out.println("we should set the value...");
 
-                    TouiDatatypes d = type.getTypeid();
+                    Datatype d = type.getTypeid();
 
                     switch (d) {
 
@@ -158,42 +165,41 @@ public class ToiParameter<T> implements ToiWritable {
     @Override
     public void write(OutputStream _outputStream) throws IOException {
 
-        // write id
+        // write mandatory id
         _outputStream.write(ByteBuffer.allocate(4).putInt((int)id).array());
 
-        // write type
+        // write mandatory type
         type.write(_outputStream);
-
-        // write type terminator
-        _outputStream.write(0);
 
         // write all optionals
         if (value != null) {
-            _outputStream.write((int)TouiParameter.VALUE.id());
+            _outputStream.write((int)Parameter.VALUE.id());
             type.writeValue(value, _outputStream);
         }
 
         if (label != null) {
-            _outputStream.write((int)TouiParameter.LABEL.id());
+            _outputStream.write((int)Parameter.LABEL.id());
             ToiParser.writeTinyString(label, _outputStream);
         }
 
         if (description != null) {
-            _outputStream.write((int)TouiParameter.DESCRIPTION.id());
+            _outputStream.write((int)Parameter.DESCRIPTION.id());
             ToiParser.writeShortString(description, _outputStream);
         }
 
         if (order != null) {
-            _outputStream.write((int)TouiParameter.ORDER.id());
+            _outputStream.write((int)Parameter.ORDER.id());
             _outputStream.write(ByteBuffer.allocate(4).putInt(order).array());
         }
 
         if (userdata != null) {
-            _outputStream.write((int)TouiParameter.USERDATA.id());
+            _outputStream.write((int)Parameter.USERDATA.id());
             _outputStream.write(ByteBuffer.allocate(4).putInt(userdata.length).array());
             _outputStream.write(userdata);
         }
 
+        // finalize parameter with terminator
+        _outputStream.write((int)Packet.TERMINATOR.id());
     }
 
     //------------------------------------------------------------
@@ -301,6 +307,10 @@ public class ToiParameter<T> implements ToiWritable {
 
 
     public T getValue() {
+
+        if (value == null) {
+            return type.getDefaultValue();
+        }
 
         return value;
     }

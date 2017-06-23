@@ -17,26 +17,26 @@ public class TOUIServerTest implements Update, ICommands.Init {
         try {
             final TOUIServerTest test = new TOUIServerTest();
 
-//            while (true) {
+            while (true) {
+
+                try {
+                    Thread.sleep(300);
+
+                    test.updateVar1();
+
+                    Thread.sleep(200);
+
+                    test.updateVar2();
+
+//                    Thread.sleep(10000);
 //
-//                try {
-//                    Thread.sleep(300);
-//
-//                    test.updateVar1();
-//
-//                    Thread.sleep(200);
-//
-//                    test.updateVar2();
-//
-////                    Thread.sleep(10000);
-////
-////                    test.dumpCache();
-//
-//                }
-//                catch (final InterruptedException _e) {
-//                    break;
-//                }
-//            }
+//                    test.dumpCache();
+
+                }
+                catch (final InterruptedException _e) {
+                    break;
+                }
+            }
         }
         catch (final InterruptedException | CertificateException | IOException _e) {
             _e.printStackTrace();
@@ -48,7 +48,7 @@ public class TOUIServerTest implements Update, ICommands.Init {
 
     //------------------------------------------------------------
     //
-    private final TOUIServer toui;
+    private final TOUIServer toi;
 
 //    private final ToiParameter<Number> theValueLong;
 //
@@ -59,6 +59,8 @@ public class TOUIServerTest implements Update, ICommands.Init {
     private final ToiParameter<Integer> theValueInt;
 
     private final ToiParameter<Boolean> theValueBool;
+
+    private final ToiParameterNumber<Long> theValueLong;
 //
 //    private final ToiParameter<HashMap<String, Number>> theValueMap;
 
@@ -77,10 +79,10 @@ public class TOUIServerTest implements Update, ICommands.Init {
         final WebsocketServerTransporterNetty transporter = new WebsocketServerTransporterNetty
                 (10000);
 
-        // create toui
-        toui = new TOUIServer(transporter);
-        toui.setUpdateListener(this);
-        toui.setInitListener(this);
+        // create toi
+        toi = new TOUIServer(transporter);
+        toi.setUpdateListener(this);
+        toi.setInitListener(this);
 
         // create values
 //        theValueLong = new ToiParameter<>("1", new TypeNumber());
@@ -88,10 +90,9 @@ public class TOUIServerTest implements Update, ICommands.Init {
 //        theValueLong.description = "long";
 //
         theValueString = new ToiParameter<>(1, new ToiTypeSTRING());
-        theValueString.setValue("oi. jep updates kommen. jeder char einzeln?? oder hast du " +
-                               "tatsächlich nach jedem tip enter gedrückt?");
+        theValueString.setValue("This is a text encoded in utf-8. let's test it: ¬”#£œæýýý‘");
         theValueString.setDescription("test description 2");
-        theValueString.setLabel("labeling");
+        theValueString.setLabel("text label");
         theValueString.setUserdata("some user data?".getBytes());
 
         theValueDouble = new ToiParameter<>(2, new ToiTypeFLOAT64(0.D, 10.D));
@@ -109,6 +110,11 @@ public class TOUIServerTest implements Update, ICommands.Init {
         theValueBool.setLabel("toggle button");
         theValueBool.setValue(true);
 
+
+        theValueLong = new ToiParameterNumber<>(5, new ToiTypeINT64());
+        //theValueLong.setValue((long)10);
+        theValueLong.setLabel("a long number");
+
 //        TypeNumber dictValue = new TypeNumber();
 //        dictValue.setMin(0);
 //        dictValue.setMax(10);
@@ -119,30 +125,33 @@ public class TOUIServerTest implements Update, ICommands.Init {
 //        theValueMap.value.put("key1", 123);
 //        theValueMap.description = "a dictionary";
 //
-//        // added values to toui
-//        toui.add(theValueLong);
-        toui.add(theValueString);
-        toui.add(theValueDouble);
-        toui.add(theValueInt);
-        toui.add(theValueBool);
-////        toui.add(theValueMap);
+//        // added values to toi
+//        toi.add(theValueLong);
+        toi.add(theValueString);
+        toi.add(theValueDouble);
+        toi.add(theValueInt);
+        toi.add(theValueBool);
+
+////        toi.add(theValueMap);
 //
-//        toui.operateOnCache(valueCache -> {});
+//        toi.operateOnCache(valueCache -> {});
     }
 
     public void updateVar1() {
 
-//        ToiParameter<Number> newVal = theValueLong.cloneEmpty();
-//        newVal.value = theValueLong.value.longValue() + 1;
-//
-//        toui.update(newVal);
+        long v = theValueLong.getValue();
+
+        ToiParameter<Long> newVal = theValueLong.cloneEmpty();
+        newVal.setValue(theValueLong.getValue() + 1);
+
+        toi.update(newVal);
     }
 
     public void updateVar2() {
-//        ToiParameter<String> newVal = theValueString.cloneEmpty();
-//
-//        newVal.value = "content: " + counter++;
-//        toui.update(newVal);
+        ToiParameter<String> newVal = theValueString.cloneEmpty();
+
+        newVal.setValue("content: " + counter++);
+        toi.update(newVal);
     }
 
     public void dumpCache() {
@@ -158,9 +167,9 @@ public class TOUIServerTest implements Update, ICommands.Init {
         // lookup value and updated it
 
         // updated cache and all clients
-        toui.update(_value);
+        toi.update(_value);
 
-        toui.dumpCache();
+        toi.dumpCache();
     }
 
     @Override
@@ -172,6 +181,19 @@ public class TOUIServerTest implements Update, ICommands.Init {
 //        boolVal.setDescription("a boolean value to test");
 //        boolVal.setLabel("boolean label");
 //
-//        toui.add(boolVal);
+//        toi.add(boolVal);
+
+        try {
+            Thread.sleep(5000);
+        }
+        catch (InterruptedException _e) {
+            _e.printStackTrace();
+        }
+
+
+        theValueLong.setValue((long)123445);
+
+        toi.add(theValueLong);
+
     }
 }

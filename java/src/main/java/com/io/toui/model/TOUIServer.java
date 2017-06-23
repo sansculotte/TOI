@@ -1,12 +1,13 @@
 package com.io.toui.model;
 
 import com.io.toui.model.ICommands.Init;
-import com.io.toui.model.ToiTypes.TouiCommands;
+import com.io.toui.model.ToiTypes.Command;
+import com.io.toui.model.ToiTypes.Command;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 import com.io.toui.model.exceptions.ToiUnsupportedFeatureException;
 import io.kaitai.struct.KaitaiStream;
 
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Created by inx on 30/11/16.
@@ -41,13 +42,18 @@ public class TOUIServer extends TOUIBase {
                 valueCache.put((int)_value.getId(), _value);
             }
             else {
-                System.out.println("already added value with this id - ignore");
+
+                if (!Objects.equals(valueCache.get((int)_value.getId()), _value)) {
+                    System.err.println("different object with same ID!!!");
+                } else {
+                    System.out.println("already added value with this id - ignore");
+                }
             }
         });
 
         if (transporter != null) {
             // TODO: send to all clients
-            final ToiPacket packet = new ToiPacket(TouiCommands.ADD, _value);
+            final ToiPacket packet = new ToiPacket(Command.ADD, _value);
             transporter.send(packet);
         }
     }
@@ -67,7 +73,7 @@ public class TOUIServer extends TOUIBase {
 
 
         if (transporter != null) {
-            final ToiPacket packet = new ToiPacket(TouiCommands.REMOVE, _value);
+            final ToiPacket packet = new ToiPacket(Command.REMOVE, _value);
             transporter.send(packet);
         }
     }
@@ -96,16 +102,16 @@ public class TOUIServer extends TOUIBase {
             return;
         }
 
-        if (_packet.getCmd() == TouiCommands.UPDATE) {
+        if (_packet.getCmd() == Command.UPDATE) {
 
             _update(_packet);
         }
-        else if (_packet.getCmd() == TouiCommands.VERSION) {
+        else if (_packet.getCmd() == Command.VERSION) {
 
             // try to convert to version object
             System.out.println("version object yet to be specified");
         }
-        else if (_packet.getCmd() == TouiCommands.INIT) {
+        else if (_packet.getCmd() == Command.INIT) {
 
             _init(_packet);
         }
@@ -127,7 +133,7 @@ public class TOUIServer extends TOUIBase {
 
                 System.out.println("sending ::: " + _parameter.getDescription());
 
-                final ToiPacket packet = new ToiPacket(TouiCommands.ADD, _parameter);
+                final ToiPacket packet = new ToiPacket(Command.ADD, _parameter);
                 transporter.send(packet);
             });
 

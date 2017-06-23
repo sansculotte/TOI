@@ -1,8 +1,7 @@
 package com.io.toui.model.types;
 
 import com.io.toui.model.ToiTypeDefinition;
-import com.io.toui.model.ToiTypes.TouiDatatypes;
-import com.io.toui.model.ToiTypes.TouiTypedef;
+import com.io.toui.model.ToiTypes.*;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
 import io.kaitai.struct.KaitaiStream;
 
@@ -22,10 +21,17 @@ public class ToiTypeUINT16 extends ToiTypeNumber<Integer> {
         // parse optionals
         while (true) {
 
-            final TouiTypedef dataid = TouiTypedef.byId(_io.readU1());
+            int did = _io.readU1();
+
+            if (did == Packet.TERMINATOR.id()) {
+                // terminator
+                break;
+            }
+
+            final TypeNumber dataid = TypeNumber.byId(did);
 
             if (dataid == null) {
-                break;
+                throw new ToiDataErrorExcpetion();
             }
 
             switch (dataid) {
@@ -54,7 +60,7 @@ public class ToiTypeUINT16 extends ToiTypeNumber<Integer> {
 
     public ToiTypeUINT16() {
 
-        super(TouiDatatypes.UINT16);
+        super(Datatype.UINT16);
     }
 
     @Override
@@ -68,5 +74,11 @@ public class ToiTypeUINT16 extends ToiTypeNumber<Integer> {
                                                                                    IOException {
 
         _outputStream.write(ByteBuffer.allocate(2).putShort(_value.shortValue()).array());
+    }
+
+    @Override
+    public Integer getTypeDefault() {
+
+        return 0;
     }
 }

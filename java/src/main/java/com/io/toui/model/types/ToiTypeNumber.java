@@ -1,12 +1,10 @@
 package com.io.toui.model.types;
 
-import com.io.toui.model.*;
-import com.io.toui.model.ToiTypes.TinyString;
-import com.io.toui.model.ToiTypes.TouiDatatypes;
-import com.io.toui.model.ToiTypes.TouiScale;
-import com.io.toui.model.ToiTypes.TouiTypedef;
-import io.kaitai.struct.KaitaiStream;
+import com.io.toui.model.ToiParser;
+import com.io.toui.model.ToiTypeDefinition;
+import com.io.toui.model.ToiTypes.*;
 import com.io.toui.model.exceptions.ToiDataErrorExcpetion;
+import io.kaitai.struct.KaitaiStream;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,12 +13,13 @@ public abstract class ToiTypeNumber<T extends Number> extends ToiTypeDefinition<
 
     public static void parseOption(
             final ToiTypeNumber<?> _typedef,
-            final TouiTypedef _dataid,
+            final TypeNumber _dataid,
             final KaitaiStream _io) throws ToiDataErrorExcpetion {
+
         switch (_dataid) {
 
             case SCALE:
-                _typedef.setScale(TouiScale.byId(_io.readU1()));
+                _typedef.setScale(NumberScale.byId(_io.readU1()));
                 break;
 
             case UNIT:
@@ -28,8 +27,7 @@ public abstract class ToiTypeNumber<T extends Number> extends ToiTypeDefinition<
                 _typedef.setUnit(tinyString.data());
                 break;
 
-            case SUBTYPE:
-            case ENTRIES:
+            default:
                 // not a number data id!!
                 throw new ToiDataErrorExcpetion();
         }
@@ -42,21 +40,18 @@ public abstract class ToiTypeNumber<T extends Number> extends ToiTypeDefinition<
 
     private T multipleof;
 
-    private TouiScale scale;
+    private NumberScale scale;
 
     private String unit;
 
     //----------------------------------------------------
-    public ToiTypeNumber(final TouiDatatypes _typeid) {
+    public ToiTypeNumber(final Datatype _typeid) {
 
         super(_typeid);
     }
 
     public ToiTypeNumber(
-            final TouiDatatypes _typeid,
-            final T _min,
-            final T _max,
-            final T _multipleof) {
+            final Datatype _typeid, final T _min, final T _max, final T _multipleof) {
 
         super(_typeid);
         min = _min;
@@ -70,29 +65,32 @@ public abstract class ToiTypeNumber<T extends Number> extends ToiTypeDefinition<
         super.write(_outputStream);
 
         if (getMin() != null) {
-            _outputStream.write((int)TouiTypedef.MIN.id());
+            _outputStream.write((int)TypeNumber.MIN.id());
             writeValue(min, _outputStream);
         }
 
         if (getMax() != null) {
-            _outputStream.write((int)TouiTypedef.MAX.id());
+            _outputStream.write((int)TypeNumber.MAX.id());
             writeValue(max, _outputStream);
         }
 
         if (getMultipleof() != null) {
-            _outputStream.write((int)TouiTypedef.MULT.id());
+            _outputStream.write((int)TypeNumber.MULT.id());
             writeValue(multipleof, _outputStream);
         }
 
         if (scale != null) {
-            _outputStream.write((int)TouiTypedef.SCALE.id());
+            _outputStream.write((int)TypeNumber.SCALE.id());
             _outputStream.write((int)scale.id());
         }
 
         if (unit != null) {
-            _outputStream.write((int)TouiTypedef.UNIT.id());
+            _outputStream.write((int)TypeNumber.UNIT.id());
             ToiParser.writeTinyString(unit, _outputStream);
         }
+
+        // finalize typedefinition with terminator
+        _outputStream.write((int)Packet.TERMINATOR.id());
     }
 
     //----------------------------------------------------
@@ -126,12 +124,12 @@ public abstract class ToiTypeNumber<T extends Number> extends ToiTypeDefinition<
         multipleof = _multipleof;
     }
 
-    public TouiScale getScale() {
+    public NumberScale getScale() {
 
         return scale;
     }
 
-    public void setScale(final TouiScale _scale) {
+    public void setScale(final NumberScale _scale) {
 
         scale = _scale;
     }
