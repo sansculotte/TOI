@@ -204,6 +204,11 @@ where Y specifies the type
 
 a long-string. 32bit size-prefixed UTF-8 string
 
+## Typedefinition Color
+
+RGB8, RGBA8, ARGB8, BGR8, BGRA8, ABGR8: no additional options.
+TODO: specify what channel is where
+
 ## Typedefinition Enum
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
