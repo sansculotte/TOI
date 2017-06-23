@@ -168,7 +168,7 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 
 uint8 value:
 - 0 == false
-- >0 == true
+- bigger than 0 == true
 
 ## Typedefinition Number (uint8, int8, uint16, int16, ...):
 
