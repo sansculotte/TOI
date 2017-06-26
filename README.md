@@ -26,7 +26,11 @@ The format is using big endian
 
 ## Framing
 
-TODO
+Data Framing is not scope of this protocol.
+
+of interest. use a:
+- prefix stream with magic (e.g.: 0x04 0x0F 0x05 0x09)
+- SLIP RFC 1055
 
 ## Types
 
