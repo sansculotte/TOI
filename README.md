@@ -18,7 +18,7 @@ eno, ingo, ingolf, joreg, karsten
 
 ## Status
 
-draft...
+Request for Comments (RFC)
 
 ## Endianess
 
