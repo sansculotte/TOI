@@ -59,7 +59,7 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 | add | 0x03 | Parameter |
 | update | 0x04 |	Parameter
 | remove | 0x05 | Parameter
-| updateValue? | 0x06 | specialized smallest update value format
+| updateValue | 0x06 | specialized smallest update value format
 | set layout? | 0x07 | Layout data
 | set style? | 0x08 | Style data
 
@@ -269,3 +269,23 @@ TODO: specify what channel is where
 | top | 0x02 |
 | bottom | 0x03 |
 | center | 0x04 |
+
+
+## updateValue
+
+to optimize the update of the value of a parameter, there is a specialized updateValue command in the form:
+
+| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+| --------------|--------------|----------------|-----------------|------------|---------------|
+| command       | 0x06         | uint8          | -               | n | updateValue command
+| parameter id  |              | uint32          | 0               | n | parameter id
+| type id       |              | uint8          | 0               | n | type-id
+| value       |          | type of type-id          | ?               | n | the value
+
+this reduces the amount of data to be sent for a simple value udpate.
+
+e.g.:
+
+updating a int32 with id 01 to value 255:
+
+0x06 0x00 0x00 0x00 0x01 0x15 0x00 0x00 0x00 0xFF (10 bytes)
