@@ -1,0 +1,28 @@
+{
+  "name": "TOI",
+  "version": "0.0.0",
+  "description": "Totally Optional Interface",
+  "main": "dist/index.js",
+  "scripts": {
+    "typescript": "tsc --project .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/i-n-g-o/TOI.git"
+  },
+  "keywords": [
+    "protocol",
+    "user",
+    "interface"
+  ],
+  "author": {
+    "name": "Gianluca Casati",
+    "url": "http://g14n.info"
+  },
+  "homepage": "https://github.com/i-n-g-o/TOI#readme",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "typescript": "^2.4.1"
+  }
+}
