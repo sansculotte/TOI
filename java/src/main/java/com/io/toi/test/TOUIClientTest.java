@@ -92,20 +92,6 @@ public class TOUIClientTest implements Add, Remove, Update {
             else if (parameter.getType() instanceof ToiTypeNumber) {
                 ((ToiParameter<Number>)newParam).setValue(count++);
             }
-//            else if (parameter.type instanceof TypeDictionary) {
-////                newParam.value = new HashMap<>();
-//
-//                if (((TypeDictionary)parameter.type).value instanceof TypeNumber) {
-//
-//                    ((HashMap<String, Number>)newParam
-//                            .value).put("rnd", Math.random() * 1024);
-//                }
-//
-//
-////                System.out.println(":: " + parameter.type.getClass().getName());
-//            }
-
-//            parameter.dump();
 
             toui.update(newParam);
 
