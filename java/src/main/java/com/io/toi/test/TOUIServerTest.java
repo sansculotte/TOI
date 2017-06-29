@@ -1,14 +1,18 @@
 package com.io.toi.test;
 
 import com.io.toi.model.*;
+import com.io.toi.model.ICommands.Init;
 import com.io.toi.model.ICommands.Update;
 import com.io.toi.model.types.*;
 import com.io.toi.test.websocket.server.WebsocketServerTransporterNetty;
 
-import java.io.IOException;
+import java.io.*;
 import java.security.cert.CertificateException;
+import java.util.Scanner;
 
-public class TOUIServerTest implements Update, ICommands.Init {
+public class TOUIServerTest implements Update, Init {
+
+    public static boolean doAutoUpdate = false;
 
     //------------------------------------------------------------
     //
@@ -17,23 +21,26 @@ public class TOUIServerTest implements Update, ICommands.Init {
         try {
             final TOUIServerTest test = new TOUIServerTest();
 
-            boolean doAutoUpdate = false;
-
             if (doAutoUpdate) {
-                // some automatic value update...
-                while (true) {
 
-                    try {
-                        Thread.sleep(300);
-                        test.updateVar1();
+                Thread t = new Thread(() -> {
 
-                        Thread.sleep(200);
-                        test.updateVar2();
+                    // some automatic value update...
+                    while (!Thread.interrupted()) {
+
+                        try {
+                            Thread.sleep(300);
+                            test.updateVar1();
+
+                            Thread.sleep(200);
+                            test.updateVar2();
+                        }
+                        catch (final InterruptedException _e) {
+                            break;
+                        }
                     }
-                    catch (final InterruptedException _e) {
-                        break;
-                    }
-                }
+                });
+                t.start();
             }
         }
         catch (final InterruptedException | CertificateException | IOException _e) {
@@ -63,7 +70,7 @@ public class TOUIServerTest implements Update, ICommands.Init {
     public TOUIServerTest() throws IOException, CertificateException, InterruptedException {
 
 
-        // a udo transporter
+        // a udp transporter
 //        final UDPServerTransporter transporter = new UDPServerTransporter(8181);
 //        transporter.setTargetPort(61187);
 
@@ -136,12 +143,6 @@ public class TOUIServerTest implements Update, ICommands.Init {
 
         // updated from client
         System.out.println("server: updated: " + _value.getId() + " : " + _value.getValue());
-
-        // lookup value and updated it in host app
-
-        // updated cache and all clients
-        // TODO: updating clients should be done inside toi
-        toi.update(_value);
 
         toi.dumpCache();
     }

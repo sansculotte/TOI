@@ -21,17 +21,35 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class TOUIPacketHandler extends SimpleChannelInboundHandler<ToiPacket> {
 
-    private final ITransporterListener listener;
+    private final ITransporterNetty listener;
 
-    public TOUIPacketHandler(final ITransporterListener _listener) {
+    public TOUIPacketHandler(final ITransporterNetty _listener) {
         listener = _listener;
+    }
+
+    @Override
+    public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+
+        if (listener != null) {
+            listener.addChannel(ctx.channel());
+        }
+
+        super.channelActive(ctx);
+    }
+
+    @Override
+    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+
+        if (listener != null) {
+            listener.removeChannel(ctx.channel());
+        }
+
+        super.channelInactive(ctx);
     }
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final ToiPacket toiPacket) throws
                                                                                       Exception {
-
-        System.out.println("got packet: " + toiPacket);
 
         if (listener != null) {
             listener.received(toiPacket);

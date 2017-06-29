@@ -5,7 +5,7 @@ package com.io.toi.model;
  */
 public interface ITransporter extends ITransporterListener {
 
-    void send(final byte[] _data);
+    //void send(final byte[] _data);
 
     void send(ToiPacket _packet);
 

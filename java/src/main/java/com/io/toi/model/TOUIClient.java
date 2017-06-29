@@ -56,20 +56,6 @@ public class TOUIClient extends TOUIBase {
     //------------------------------------------------------------
     //
     @Override
-    public void received(final byte[] _data) {
-
-        // deserialize
-        try {
-            final ToiPacket toiPacket = ToiPacket.parse(new KaitaiStream(_data));
-
-            received(toiPacket);
-        }
-        catch (ToiUnsupportedFeatureException | ToiDataErrorExcpetion _e) {
-            _e.printStackTrace();
-        }
-    }
-
-    @Override
     public void received(final ToiPacket _packet) {
 
         if (_packet == null) {

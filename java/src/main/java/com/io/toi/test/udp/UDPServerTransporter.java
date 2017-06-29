@@ -1,6 +1,9 @@
 package com.io.toi.test.udp;
 
 import com.io.toi.model.*;
+import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiUnsupportedFeatureException;
+import io.kaitai.struct.KaitaiStream;
 
 import java.io.IOException;
 import java.net.*;
@@ -71,7 +74,17 @@ public class UDPServerTransporter extends Thread implements ITransporter {
                     clients.add(receivePacket.getAddress());
                 }
 
-                received(Arrays.copyOf(receivePacket.getData(), receivePacket.getLength()));
+                byte[] data = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+
+                // parse that
+                try {
+                    final ToiPacket toiPacket = ToiPacket.parse(new KaitaiStream(data));
+
+                    received(toiPacket);
+                }
+                catch (ToiUnsupportedFeatureException | ToiDataErrorExcpetion _e) {
+                    _e.printStackTrace();
+                }
             }
             catch (final IOException _e) {
                 _e.printStackTrace();
@@ -82,42 +95,36 @@ public class UDPServerTransporter extends Thread implements ITransporter {
         System.out.println("finishing Client Transporter");
     }
 
-    @Override
-    public void send(final byte[] _data) {
-
-        if (_data == null) {
-            return;
-        }
-
-        if (clients.isEmpty()) {
-            System.err.println("no clients " + new String(_data));
-
-            return;
-        }
-
-        clients.forEach(_inetAddress -> {
-
-            System.out.println("ip: " + _inetAddress.getHostAddress() + ":" + targetPort + " :: " +
-                               "" + new String
-                    (_data));
-
-            final DatagramPacket sendPacket = new DatagramPacket(_data,
-                                                                 _data.length,
-                                                                 _inetAddress,
-                                                                 targetPort);
-
-            try {
-                socket.send(sendPacket);
-            }
-            catch (final IOException _e) {
-                _e.printStackTrace();
-            }
-
-        });
-    }
 
     @Override
     public void send(final ToiPacket _packet) {
+
+        try {
+            final byte[] data = ToiPacket.serialize(_packet);
+
+            clients.forEach(_inetAddress -> {
+
+//                System.out.println("ip: " + _inetAddress.getHostAddress() + ":" + targetPort + " :: " +
+//                                   "" + new String
+//                                           (data));
+
+                final DatagramPacket sendPacket = new DatagramPacket(data,
+                                                                     data.length,
+                                                                     _inetAddress,
+                                                                     targetPort);
+
+                try {
+                    socket.send(sendPacket);
+                }
+                catch (final IOException _e) {
+                    _e.printStackTrace();
+                }
+
+            });
+        }
+        catch (final IOException _e) {
+            _e.printStackTrace();
+        }
 
     }
 
@@ -125,14 +132,6 @@ public class UDPServerTransporter extends Thread implements ITransporter {
     public void setListener(final ITransporterListener _listener) {
 
         listener = _listener;
-    }
-
-    @Override
-    public void received(final byte[] _data) {
-
-        if (listener != null) {
-            listener.received(_data);
-        }
     }
 
     @Override

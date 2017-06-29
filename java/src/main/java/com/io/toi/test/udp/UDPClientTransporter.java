@@ -1,6 +1,9 @@
 package com.io.toi.test.udp;
 
 import com.io.toi.model.*;
+import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiUnsupportedFeatureException;
+import io.kaitai.struct.KaitaiStream;
 
 import java.io.IOException;
 import java.net.*;
@@ -54,9 +57,20 @@ public class UDPClientTransporter extends Thread implements ITransporter {
             try {
                 clientSocket.receive(receivePacket);
 
-                received(Arrays.copyOf(receivePacket.getData(), receivePacket.getLength()));
+                final byte[] data = Arrays.copyOf(receivePacket.getData(), receivePacket.getLength());
+
+                // parse that
+                try {
+                    final ToiPacket toiPacket = ToiPacket.parse(new KaitaiStream(data));
+
+                    received(toiPacket);
+                }
+                catch (ToiUnsupportedFeatureException | ToiDataErrorExcpetion _e) {
+                    _e.printStackTrace();
+                }
+
             }
-            catch (IOException _e) {
+            catch (final IOException _e) {
                 _e.printStackTrace();
             }
         }
@@ -65,26 +79,21 @@ public class UDPClientTransporter extends Thread implements ITransporter {
         System.out.println("finishing Client Transporter");
     }
 
+
     @Override
-    public void send(final byte[] _data) {
-
-        if (_data == null) {
-            return;
-        }
-
-        final DatagramPacket sendPacket = new DatagramPacket(_data, _data.length, address, port);
+    public void send(final ToiPacket _packet) {
 
         try {
+            final byte[] data = ToiPacket.serialize(_packet);
+
+            final DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, port);
+
             clientSocket.send(sendPacket);
         }
         catch (final IOException _e) {
             _e.printStackTrace();
         }
-    }
 
-    @Override
-    public void send(final ToiPacket _packet) {
-        // TODO
     }
 
     @Override
@@ -93,13 +102,13 @@ public class UDPClientTransporter extends Thread implements ITransporter {
         listener = _listener;
     }
 
-    @Override
-    public void received(final byte[] _data) {
-
-        if (listener != null) {
-            listener.received(_data);
-        }
-    }
+//    @Override
+//    public void received(final byte[] _data) {
+//
+//        if (listener != null) {
+//            listener.received(_data);
+//        }
+//    }
 
     @Override
     public void received(final ToiPacket _packet) {

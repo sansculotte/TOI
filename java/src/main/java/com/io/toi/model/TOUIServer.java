@@ -2,9 +2,6 @@ package com.io.toi.model;
 
 import com.io.toi.model.ICommands.Init;
 import com.io.toi.model.ToiTypes.Command;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
-import com.io.toi.model.exceptions.ToiUnsupportedFeatureException;
-import io.kaitai.struct.KaitaiStream;
 
 import java.util.Objects;
 
@@ -80,20 +77,6 @@ public class TOUIServer extends TOUIBase {
     //------------------------------------------------------------
     //
     @Override
-    public void received(final byte[] _data) {
-
-        try {
-            // deserialize
-            final ToiPacket toiPacket = ToiPacket.parse(new KaitaiStream(_data));
-
-            received(toiPacket);
-        }
-        catch (ToiDataErrorExcpetion | ToiUnsupportedFeatureException _e) {
-            _e.printStackTrace();
-        }
-    }
-
-    @Override
     public void received(final ToiPacket _packet) {
 
         if (_packet == null) {
@@ -103,7 +86,14 @@ public class TOUIServer extends TOUIBase {
 
         if (_packet.getCmd() == Command.UPDATE) {
 
-            _update(_packet);
+            final ToiParameter<?> val = (ToiParameter<?>)_packet.getData();
+
+            if (updateListener != null) {
+                updateListener.updated(val);
+            }
+
+            // update all clients...
+            update(val);
         }
         else if (_packet.getCmd() == Command.VERSION) {
 
@@ -111,6 +101,11 @@ public class TOUIServer extends TOUIBase {
             System.out.println("version object yet to be specified");
         }
         else if (_packet.getCmd() == Command.INIT) {
+
+            if (_packet.getData() != null) {
+                // TODO: send full description of only one parameter
+                final ToiParameter<?> val = (ToiParameter<?>)_packet.getData();
+            }
 
             _init(_packet);
         }
@@ -141,36 +136,6 @@ public class TOUIServer extends TOUIBase {
 
         if (initListener != null) {
             initListener.init();
-        }
-    }
-
-    private void _update(final ToiPacket _packet) {
-
-        // try to convert data to TypeDefinition
-        try {
-
-            final ToiParameter<?> val = (ToiParameter<?>)_packet.getData();
-
-            switch (_packet.getCmd()) {
-                case UPDATE:
-                    if (updateListener != null) {
-                        updateListener.updated(val);
-                    }
-
-                    // TODO: should call own updated here?
-                    // -> this should updated all clients...
-                    // optimize, do not send back to same client??
-                    // maybe let listener decide to updated all clients??
-
-                    break;
-
-                default:
-                    System.err.println("no such command implemented in server: " + _packet.getCmd());
-            }
-
-        }
-        catch (final IllegalArgumentException e) {
-            e.printStackTrace();
         }
     }
 }

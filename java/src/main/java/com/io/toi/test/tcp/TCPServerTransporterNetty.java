@@ -16,14 +16,16 @@
 package com.io.toi.test.tcp;
 
 import com.io.toi.model.*;
+import com.io.toi.test.netty.ITransporterNetty;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
-public final class TCPServerTransporterNetty implements ITransporter {
+public final class TCPServerTransporterNetty implements ITransporterNetty {
 
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 
@@ -32,6 +34,8 @@ public final class TCPServerTransporterNetty implements ITransporter {
     private final Channel ch;
 
     private ITransporterListener   listener;
+
+    final ChannelGroup allClients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     public TCPServerTransporterNetty(final int _port) throws InterruptedException {
 
@@ -53,26 +57,13 @@ public final class TCPServerTransporterNetty implements ITransporter {
 
     ChannelHandlerContext lastCtx;
 
-    public void received(final ChannelHandlerContext ctx, final byte[] _data) {
+    public void received(final ChannelHandlerContext ctx, final ToiPacket _packet) {
 
         lastCtx = ctx;
-        received(_data);
-    }
+        received(_packet);
 
-    public void done(final ChannelHandlerContext ctx) {
-
+        // done
         lastCtx = null;
-    }
-
-    @Override
-    public void received(final byte[] _data) {
-
-        //        System.out.println("recv: " + new String(_data));
-
-        if (listener != null) {
-            listener.received(_data);
-        }
-
     }
 
     @Override
@@ -82,15 +73,6 @@ public final class TCPServerTransporterNetty implements ITransporter {
         }
     }
 
-    @Override
-    public void send(final byte[] _data) {
-
-        if (lastCtx != null) {
-
-            lastCtx.channel()
-                   .writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(_data)));
-        }
-    }
 
     @Override
     public void send(final ToiPacket _packet) {
@@ -103,4 +85,15 @@ public final class TCPServerTransporterNetty implements ITransporter {
         listener = _listener;
     }
 
+    @Override
+    public void addChannel(final Channel _channel) {
+
+        allClients.add(_channel);
+    }
+
+    @Override
+    public void removeChannel(final Channel _channel) {
+
+        allClients.remove(_channel);
+    }
 }

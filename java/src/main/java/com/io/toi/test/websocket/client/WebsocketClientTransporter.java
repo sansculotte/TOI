@@ -80,19 +80,8 @@ public class WebsocketClientTransporter implements ITransporter {
     }
 
     @Override
-    public void received(final byte[] _data) {
-
-    }
-
-    @Override
     public void received(final ToiPacket _packet) {
 
-    }
-
-    @Override
-    public void send(final byte[] _data) {
-
-        ch.writeAndFlush(_data);
     }
 
     @Override
