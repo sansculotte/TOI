@@ -4,7 +4,7 @@
   "description": "Totally Optional Interface is a protocol for UI",
   "main": "dist/index.js",
   "scripts": {
-    "tslint": "tslint src/*ts",
+    "tslint": "tslint -c tslint.json 'src/**/*.ts'",
     "typescript": "tsc --project .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
