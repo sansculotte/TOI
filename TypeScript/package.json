@@ -1,9 +1,10 @@
 {
-  "name": "TOI",
+  "name": "toi-protocol",
   "version": "0.0.0",
-  "description": "Totally Optional Interface",
+  "description": "Totally Optional Interface is a protocol for UI",
   "main": "dist/index.js",
   "scripts": {
+    "tslint": "tslint src/*ts",
     "typescript": "tsc --project .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +24,7 @@
   "homepage": "https://github.com/i-n-g-o/TOI#readme",
   "license": "UNLICENSED",
   "devDependencies": {
+    "tslint": "^5.4.3",
     "typescript": "^2.4.1"
   }
 }
