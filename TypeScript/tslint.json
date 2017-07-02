@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+      "prefer-const": false,
       "semicolon": [true, "never"],
       "quotemark": [true, "single", "jsx-double"]
     },
