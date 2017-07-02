@@ -2,11 +2,11 @@
   "name": "toi-protocol",
   "version": "0.0.0",
   "description": "Totally Optional Interface is a protocol for UI",
-  "main": "dist/index.js",
+  "main": "dist/toi.js",
   "scripts": {
-    "tslint": "tslint -c tslint.json 'src/**/*.ts'",
+    "tslint": "tslint -c tslint.json '{src,test}/**/*.ts'",
     "typescript": "tsc --project .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers ts:ts-node/register"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,11 @@
   "homepage": "https://github.com/i-n-g-o/TOI#readme",
   "license": "UNLICENSED",
   "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "ts-node": "^3.1.0",
     "tslint": "^5.4.3",
     "typescript": "^2.4.1"
   }

@@ -12,15 +12,13 @@ Open a terminal into this folder, than with [npm] do
 npm install
 ```
 
-### Build
+### Test
 
-Just run
+Launch tests, as usual, with
 
 ```bash
-npm run typescript
+npm test
 ```
-
-See also tsconfig.json file which configures the build process.
 
 ### Lint
 
@@ -31,6 +29,16 @@ npm run tslint
 ```
 
 See also tslint.json file which configures the linter.
+
+### Build
+
+Just run
+
+```bash
+npm run typescript
+```
+
+See also tsconfig.json file which configures the build process.
 
 [npm]: https://www.npmjs.com/ "npm"
 [Node.js]: https://nodejs.org "Node.js"
