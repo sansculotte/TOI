@@ -29,6 +29,7 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "@types/chai": "^4.0.1",
+    "@types/debug": "0.0.29",
     "@types/mocha": "^2.2.41",
     "chai": "^4.0.2",
     "mocha": "^3.4.2",
@@ -36,5 +37,8 @@
     "ts-node": "^3.1.0",
     "tslint": "^5.4.3",
     "typescript": "^2.4.1"
+  },
+  "dependencies": {
+    "debug": "^2.6.8"
   }
 }

@@ -5,10 +5,12 @@
     ],
     "jsRules": {},
     "rules": {
+      "interface-name": false,
       "member-access": [true, "no-public"],
       "prefer-const": false,
+      "quotemark": [true, "single", "jsx-double"],
       "semicolon": [true, "never"],
-      "quotemark": [true, "single", "jsx-double"]
+      "trailing-comma": false
     },
     "rulesDirectory": []
 }

@@ -1,5 +1,7 @@
-export const VERSION = 1
-export const INIT = 2
-export const ADD = 3
-export const UPDATE = 4
-export const REMOVE = 5
+export enum TOICommand {
+  VERSION = 1,
+  INIT = 2,
+  ADD = 3,
+  UPDATE = 4,
+  REMOVE = 5
+}

@@ -1,12 +1,14 @@
-export class Packet {
+import { TOICommand } from './Command'
+
+export class TOIPacket {
   static TERMINATOR = 0
   static ID = 16
   static TIMESTAMP = 17
   static DATA = 18
 
-  readonly command: number
+  readonly command: TOICommand
 
-  constructor(command: number) {
+  constructor(command: TOICommand) {
     this.command = command
   }
 
@@ -17,7 +19,7 @@ export class Packet {
     // TODO push packet timestamp
     // TODO push packet data
 
-    result.push(Packet.TERMINATOR)
+    result.push(TOIPacket.TERMINATOR)
 
     return result
   }

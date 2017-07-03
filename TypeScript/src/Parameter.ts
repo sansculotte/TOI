@@ -1,4 +1,4 @@
-export class Parameter {
+export class TOIParameter {
   static VALUE = 32
   static LABEL = 33
   static DESCRIPTION = 34
@@ -12,7 +12,7 @@ export class Parameter {
 
     // TODO
 
-    result.push(Parameter.TERMINATOR)
+    result.push(TOIParameter.TERMINATOR)
 
     return result
   }
