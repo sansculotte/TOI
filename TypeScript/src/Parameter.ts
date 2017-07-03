@@ -1,13 +1,13 @@
 export class Parameter {
-  static public VALUE = 32
-  static public LABEL = 33
-  static public DESCRIPTION = 34
-  static public ORDER = 35
-  static public WIDGET = 36
-  static public USERDATA = 37
-  static public TERMINATOR = 0
+  static VALUE = 32
+  static LABEL = 33
+  static DESCRIPTION = 34
+  static ORDER = 35
+  static WIDGET = 36
+  static USERDATA = 37
+  static TERMINATOR = 0
 
-  public bytes() {
+  bytes() {
     let result: number[] = []
 
     // TODO

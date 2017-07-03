@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+      "member-access": [true, "no-public"],
       "prefer-const": false,
       "semicolon": [true, "never"],
       "quotemark": [true, "single", "jsx-double"]
