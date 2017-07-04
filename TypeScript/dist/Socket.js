@@ -28,8 +28,9 @@ var TOISocket = (function () {
         this.websocket = websocket;
         say('connect');
     };
-    TOISocket.prototype.isNotOpen = function () {
-        return this.websocket.readyState !== TOISocket.readyState.OPEN;
+    TOISocket.prototype.isOpen = function () {
+        var websocket = this.websocket;
+        return websocket && websocket.readyState === TOISocket.readyState.OPEN;
     };
     TOISocket.prototype.receive = function (packet) {
         // TODO decode event.data
@@ -42,16 +43,16 @@ var TOISocket = (function () {
             case TOISocket.readyState.CONNECTING:
             case TOISocket.readyState.CLOSED:
             case TOISocket.readyState.CLOSING:
-                say(TOISocket.errorMessage.cannotSend);
-                throw new Error(TOISocket.errorMessage.cannotSend);
+                say(TOISocket.errorMessage.notConnected);
+                throw new Error(TOISocket.errorMessage.notConnected);
             case TOISocket.readyState.OPEN:
-                this.websocket.send(packet);
+                this.websocket.send(packet.bytes());
                 say('send');
                 break;
         }
     };
     TOISocket.errorMessage = {
-        cannotSend: 'Cannot send data, websocket is not open.'
+        notConnected: 'Connection is not open.'
     };
     TOISocket.readyState = ReadyStateEnum;
     return TOISocket;

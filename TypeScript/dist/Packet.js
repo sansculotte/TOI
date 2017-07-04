@@ -10,7 +10,7 @@ var TOIPacket = (function () {
         // TODO push packet timestamp
         // TODO push packet data
         result.push(TOIPacket.TERMINATOR);
-        return result;
+        return new Uint8Array(result);
     };
     TOIPacket.TERMINATOR = 0;
     TOIPacket.ID = 16;

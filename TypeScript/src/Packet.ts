@@ -12,7 +12,7 @@ export class TOIPacket {
     this.command = command
   }
 
-  bytes() {
+  bytes(): Uint8Array {
     let result: number[] = []
 
     // TODO push packet id
@@ -21,6 +21,6 @@ export class TOIPacket {
 
     result.push(TOIPacket.TERMINATOR)
 
-    return result
+    return new Uint8Array(result)
   }
 }

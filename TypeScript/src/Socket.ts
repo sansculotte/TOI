@@ -14,7 +14,7 @@ enum ReadyStateEnum {
 
 export class TOISocket implements TOITransport {
   static errorMessage = {
-    cannotSend: 'Cannot send data, websocket is not open.'
+    notConnected: 'Connection is not open.'
   }
 
   static readyState = ReadyStateEnum
@@ -46,8 +46,10 @@ export class TOISocket implements TOITransport {
     say('connect')
   }
 
-  isNotOpen() {
-    return this.websocket.readyState !== TOISocket.readyState.OPEN
+  isOpen() {
+    const websocket = this.websocket
+
+    return websocket && websocket.readyState === TOISocket.readyState.OPEN
   }
 
   receive(packet: TOIPacket) {
@@ -63,12 +65,12 @@ export class TOISocket implements TOITransport {
       case TOISocket.readyState.CONNECTING:
       case TOISocket.readyState.CLOSED:
       case TOISocket.readyState.CLOSING:
-        say(TOISocket.errorMessage.cannotSend)
+        say(TOISocket.errorMessage.notConnected)
 
-        throw new Error(TOISocket.errorMessage.cannotSend)
+        throw new Error(TOISocket.errorMessage.notConnected)
 
       case TOISocket.readyState.OPEN:
-        this.websocket.send(packet)
+        this.websocket.send(packet.bytes())
         say('send')
         break
     }

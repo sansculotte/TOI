@@ -25,3 +25,26 @@ export enum TOIDataType {
   BANG = 58,
   TIME = 59
 }
+
+function isNumber(n: any) {
+  return typeof n === 'number'
+}
+
+function isInRange(n: number, bits: number) {
+  return ((n >= 0 - Math.pow(2, bits - 1)) && (n <= Math.pow(2, bits - 1) - 1))
+}
+
+function isInUnsignedRange(n: number, bits: number) {
+  return ((n >= 0) && (n <= Math.pow(2, bits) - 1))
+}
+
+export const validate = {
+  BOOL: (b: any) => typeof b === 'boolean',
+  // TODO improve and complete validators
+  INT8: (n: any) => {
+    return isNumber(n) && isInRange(n, 8)
+  },
+  UINT8: (n: any) => {
+    return isNumber(n) && isInUnsignedRange(n, 8)
+  }
+}

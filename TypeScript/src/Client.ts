@@ -1,35 +1,32 @@
 import * as debug from 'debug'
 
+import { TOICommand } from './Command'
+import { TOIPacket } from './Packet'
 import { TOISocket } from './Socket'
 
 const say = debug('toi:client')
 
 export class TOIClient {
-  static errorMessage = {
-    cannotDisconnect: 'Cannot disconnect client, connection is not open.'
-  }
-
   private socket?: TOISocket
 
-  connect(serverURL: string) {
+  constructor(serverURL: string) {
     this.socket = new TOISocket(serverURL)
-
-    say('connect')
   }
 
-  disconnect() {
+  sendUpdate() {
     const socket = this.socket
 
-    if (socket) {
-      socket.close()
-    }
+    try {
+      const packet = new TOIPacket(TOICommand.UPDATE)
 
-    const socketIsNotOpen = socket && socket.isNotOpen()
+      // TODO add data to packet.
 
-    if (!socket || socketIsNotOpen) {
-      say(TOIClient.errorMessage.cannotDisconnect)
-
-      throw new Error(TOIClient.errorMessage.cannotDisconnect)
+      if (socket) {
+        socket.send(packet)
+        say('send update')
+      }
+    } catch (error) {
+      throw error
     }
   }
 }
