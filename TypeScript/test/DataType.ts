@@ -17,15 +17,15 @@ describe('validate', () => {
     expect(validate.BOOL('not a boolean'), 'a string').to.be.false
   })
 
-  it('can check INT8'/*, () => {
+  it('can check INT8', () => {
     expect(validate.INT8(1), 'positive number').to.be.true
-    expect(validate.INT8(-2323), 'negative number').to.be.true
+    expect(validate.INT8(-23), 'negative number').to.be.true
     expect(validate.INT8('not an integer'), 'a string').to.be.false
     expect(validate.INT8(10000000), 'out of bound number').to.be.false
-  }*/)
+  })
 
-  it('can check UINT8'/*, () => {
-    expect(validate.UINT8(1000), 'positive number').to.be.true
+  it('can check UINT8', () => {
+    expect(validate.UINT8(100), 'positive number').to.be.true
     expect(validate.UINT8(-1), 'negative number').to.be.false
-  }*/)
+  })
 })
