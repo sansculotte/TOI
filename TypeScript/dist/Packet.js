@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var TOIPacket = (function () {
-    function TOIPacket(command) {
+    function TOIPacket(command, id) {
         this.command = command;
+        this.id = id;
     }
     TOIPacket.prototype.bytes = function () {
         var result = [];

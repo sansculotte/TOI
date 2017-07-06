@@ -2,6 +2,7 @@ import * as debug from 'debug'
 
 import { TOIDataType, validate } from './DataType'
 import { TOITypeNumber } from './TypeNumber'
+import { pushTypedValue } from './utils'
 
 const say = debug('toi:transport')
 
@@ -13,6 +14,7 @@ export class TOITypeDefinition {
     invalidDefaultValue: 'Invalid defaultValue provided.'
   }
 
+  defaultValue: any
   typeid: TOIDataType
   min?: number
   max?: number
@@ -70,7 +72,7 @@ export class TOITypeDefinition {
     }
   }
 
-  bytes(): Uint8Array {
+  bytes(): number[] {
     let result: number[] = []
 
     const defaultValue = this.defaultValue
@@ -129,6 +131,6 @@ export class TOITypeDefinition {
     }
     result.push(TOITypeDefinition.TERMINATOR)
 
-    return new Uint8Array(result)
+    return result
   }
 }

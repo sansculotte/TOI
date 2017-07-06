@@ -7,6 +7,7 @@
     "rules": {
       "interface-name": false,
       "member-access": [true, "no-public"],
+      "no-unused-expression": false,
       "prefer-const": false,
       "quotemark": [true, "single", "jsx-double"],
       "semicolon": [true, "never"],
