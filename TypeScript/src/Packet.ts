@@ -7,9 +7,12 @@ export class TOIPacket {
   static DATA = 18
 
   readonly command: TOICommand
+  id?: number
 
-  constructor(command: TOICommand) {
+  constructor(command: TOICommand, id?: number) {
     this.command = command
+
+    this.id = id
   }
 
   bytes(): Uint8Array {
