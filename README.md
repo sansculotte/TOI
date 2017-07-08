@@ -18,6 +18,8 @@ eno, ingo, ingolf, joreg, karsten
 
 ## Status
 
+Work in progress
+
 Request for Comments (RFC)
 
 ## Endianess
@@ -67,7 +69,7 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 - data provider ususally send: version, add, update, remove
 - data clients usually send: init, update
 
-## Meta Data (0x13)
+## Meta Data
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
@@ -89,7 +91,7 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 |-|-| updateValue | remove | update | add | init | version |
 
 
-## Parameter (0x13):
+## Parameter:
 
 | Name          | ID hex/dec   | Type           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
@@ -99,9 +101,17 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 | label | 0x21 (33)	| tiny-string | "" | y | Human readable identifier
 | desc | 0x22 (34) | short-string | "" | y | can be shown as a tooltip
 | order | 0x23 (35)	|	int32 | 0 | y | allows for most simple layout
-| widget | 0x24 (36) | widget data | text-input-widget | y | if not specified a default widget is used
-| userdata | 0x25 (37) | size of value (uint32) followed by userdata | - | y | various user-data. e.g.: metadata, tags, ...
+| parent | 0x24 (36)	|	uint32 | 0 | y | specifies another parameterGroup as parent.
+| widget | 0x25 (37) | widget data | text-input-widget | y | if not specified a default widget is used
+| userdata | 0x26 (38) | size of value (uint32) followed by userdata | - | y | various user-data. e.g.: metadata, tags, ...
 | terminator | 0 | 1 byte | 0 | n | terminator
+
+
+## ParameterGroup:
+
+A ParameterGroup is a Parameter without value/dfaultValue and a fixed TypeDefintion (group).
+
+A ParameterGroup allows to structure your parameters and can be used to discover parameter on different levels.
 
 
 ## Typedefinition:
@@ -117,13 +127,13 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 
 ### type-table: (1byte)
 
-| typename   | hex (dec)   |
-| -----------|-------------|
-| boolean | 0x10 (16) |
-| int8 | 0x11 (17) |
-| uint8 | 0x12 (18) |
-| int16 | 0x13	(19) |
-| uint16 | 0x14 (20) |
+| typename   | hex (dec)   | length (bytes)   |
+| -----------|-------------|------------------|
+| boolean | 0x10 (16) | 1 |
+| int8 | 0x11 (17) | 1 |
+| uint8 | 0x12 (18) | 1 |
+| int16 | 0x13	(19) | 2 |
+| uint16 | 0x14 (20) | 2|
 | int32 | 0x15	(21) |
 | uint32 | 0x16	(22) |
 | int64 | 0x17 (23) |
@@ -160,12 +170,14 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 | Enum | 0x36 (54) |
 | Array | 0x37 (55) |
 | Dict/Map | 0x38 (56) |
-| Image | 0x39 (57) |
-| BANG | 0x3a (58) |
-| timetag | 0x3b (59) |
+| Image | 0x39 (57) | ? |
+| BANG | 0x3a (58) | 0 |
+| timetag | 0x3b (59) | 8 |
+| group | 0x3c (60) | 0 |
 | bin8? | |
 | bin16? | |
 | bin32? | |
+
 
 
 ## Typedefinition Boolean:
