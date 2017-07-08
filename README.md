@@ -135,11 +135,11 @@ A ParameterGroup allows to structure your parameters and can be used to discover
 | int8 | 0x11 (17) | 1 |
 | uint8 | 0x12 (18) | 1 |
 | int16 | 0x13	(19) | 2 |
-| uint16 | 0x14 (20) | 2|
-| int32 | 0x15	(21) |
-| uint32 | 0x16	(22) |
-| int64 | 0x17 (23) |
-| uint64 | 0x18	(24) |
+| uint16 | 0x14 (20) | 2 |
+| int32 | 0x15	(21) | 4 |
+| uint32 | 0x16	(22) | 4 |
+| int64 | 0x17 (23) | 8 |
+| uint64 | 0x18	(24) | 8 |
 | float32 | 0x19 (25) |
 | float64 | 0x1a (26) |
 | Vector2i8 | 0x1b |
@@ -163,21 +163,17 @@ A ParameterGroup allows to structure your parameters and can be used to discover
 | String (tiny) | 0x2d |
 | String (short) | 0x2e |
 | String (long) | 0x2f |
-| RGB8 | 0x30 (48) |
-| RGBA8 | 0x31 (49) |
-| ARGB8 | 0x32 (50) |
-| BGR8 | 0x33 (51) |
-| BGRA8 | 0x34 (52) |
-| ABGR8 | 0x35 (53) |
-| Enum | 0x36 (54) |
-| fixed Array | 0x37 (55) |
-| dynamic Array | 0x36 (56) |
-| Dict/Map | 0x39 (57) |
-| Image | 0x3a (58) | ? |
-| BANG | 0x3b (59) | 0 |
-| timetag | 0x3c (60) | 8 |
-| group | 0x3d (61) | 0 |
-| compound | 0x3e (62) | ? |
+| RGB | 0x30 (48) |
+| RGBA | 0x31 (49) |
+| Enum | 0x32 |
+| fixed Array | 0x33 |
+| dynamic Array | 0x34 |
+| Dict/Map | 0x35 |
+| Image | 0x36 | ? |
+| BANG | 0x37 | 0 |
+| timetag | 0x38 | 8 |
+| group | 0x39 | 0 |
+| compound | 0x3a | ? |
 | bin8? | |
 | bin16? | |
 | bin32? | |
@@ -243,11 +239,19 @@ a long-string. 32bit size-prefixed UTF-8 string
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | default | 0x30 (48) | long-string | 0 | y | default value
 
-## Typedefinition Color
 
-RGB8, RGBA8, ARGB8, BGR8, BGRA8, ABGR8: no additional options.
+## Typedefinition Color: RGB, RGBA
 
-TODO: specify what channel is where
+Colors are in byte-order with 8-bits per channel
+
+e.g. RGBA:
+
+Red: 0xFF 0x00 0x00 0xFF
+
+Green: 0x00 0xFF 0x00 0xFF
+
+Blue: 0x00 0x00 0xFF 0xFF
+
 
 | Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
