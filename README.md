@@ -22,6 +22,8 @@ Work in progress
 
 Request for Comments (RFC)
 
+https://riot.im/develop/#/room/#toi:matrix.org
+
 ## Endianess
 
 The format is using big endian
