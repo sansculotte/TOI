@@ -176,6 +176,7 @@ A ParameterGroup allows to structure your parameters and can be used to discover
 | BANG | 0x3b (59) | 0 |
 | timetag | 0x3c (60) | 8 |
 | group | 0x3d (61) | 0 |
+| compound | 0x3e (62) | ? |
 | bin8? | |
 | bin16? | |
 | bin32? | |
@@ -268,7 +269,7 @@ TODO: clearify: alternative being comma-separated string for enum entries
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | **subtype** | - | TypeDefinition | StringType | n | TypeDefintion of array elements
 | **length** | - | uint32 | 0 | n | length of fixed array
-| default | 0x30 (48) | fixed array of subtype | 0 | y | default value
+| default | 0x30 (48) | fixed array of subtype | - | y | default value
 
 
 ## Typedefinition dynamic Array
@@ -280,7 +281,17 @@ e.g.: <length uint32> value value value
 | Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | **subtype** | - | TypeDefinition | StringType | n | TypeDefintion of array elements
-| default | 0x30 (48) | dynamic array of subtype | 0 | y | default value
+| default | 0x30 (48) | dynamic array of subtype | 0 - | y | default value
+
+
+## Typedefinition Compound
+
+A compound type is a combination of other known types.
+
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
+| --------------|--------------|----------------|-----------------|------------|---------------|
+| **subtypes** | - | dynamic array of TypeDefinition | 0 | n | TypeDefintion of array elements
+| default | 0x30 (48) | listing of values defined by subtypes | - | y | default value
 
 
 ## Widget (0x24):
