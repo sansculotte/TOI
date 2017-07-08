@@ -39,9 +39,9 @@ of interest. use a:
 
 ## Types
 
-- tiny-string: prefixed with size [uint8] followed by [UTF-8 string-data]
-- short-string: prefixed with size [uint16] followed by [UTF-8 string-data]
-- long-string: prefixed with size [uint32] followed by [UTF-8 string-data]
+- string-tiny: prefixed with size [uint8] followed by [UTF-8 string-data]
+- string-short: prefixed with size [uint16] followed by [UTF-8 string-data]
+- string: prefixed with size [uint32] followed by [UTF-8 string-data]
 
 ## Package
 
@@ -101,8 +101,8 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 | **id** | - | uint32 | 0 | n | unique identifier
 | **type** |	- | TypeDefinition | - | n | typedefinition of value
 | value | 0x20 (32) | known from typedefinition | ? | y |	value (length is known by type!)
-| label | 0x21 (33)	| tiny-string | "" | y | Human readable identifier
-| desc | 0x22 (34) | short-string | "" | y | can be shown as a tooltip
+| label | 0x21 (33)	| string-tiny | "" | y | Human readable identifier
+| desc | 0x22 (34) | string-short | "" | y | can be shown as a tooltip
 | order | 0x23 (35)	|	int32 | 0 | y | allows for most simple layout
 | parent | 0x24 (36)	|	uint32 | 0 | y | specifies another parameterGroup as parent.
 | widget | 0x25 (37) | widget data | text-input-widget | y | if not specified a default widget is used
@@ -160,9 +160,9 @@ A ParameterGroup allows to structure your parameters and can be used to discover
 | Vector4i64 | 0x2a |
 | Vector4f32 | 0x2b |
 | Vector4f64 | 0x2c |
-| String (tiny) | 0x2d |
-| String (short) | 0x2e |
-| String (long) | 0x2f |
+| String-tiny | 0x2d |
+| String-short | 0x2e |
+| String | 0x2f |
 | RGB | 0x30 (48) |
 | RGBA | 0x31 (49) |
 | Enum | 0x32 |
@@ -202,7 +202,7 @@ see type-table for all number-types.
 | max | 0x32 (50) | of type | 0 | y | max value
 | multipleof | 0x33 (51) | of type | 0 | y | multiple of value
 | scale | 0x34 (52) | uint8 | 0 | < | one of these (0x00, 0x01, 0x02)
-| unit | 0x35 (53) | tiny-string | "" | y | the unit of value
+| unit | 0x35 (53) | string-tiny | "" | y | the unit of value
 
 ## Typedefinition Vector: Vector2f32, Vector2i8, Vector4f32, ...
 
@@ -221,7 +221,7 @@ see type-table for a full list of available Vector-types.
 | max | 0x32 (50) | X times Y | 0 | y | max value
 | multipleof | 0x33 (51) | X times Y | 0 | y | multiple of value
 | scale | 0x34 (52) | uint8 | 0 | < | one of these (0x00, 0x01, 0x02)
-| unit | 0x35 (53) | tiny-string | "" | y | the unit of value
+| unit | 0x35 (53) | string-tiny | "" | y | the unit of value
 
 ### scale table
 
@@ -231,13 +231,13 @@ see type-table for a full list of available Vector-types.
 | Log | 0x01 |
 | exp2 | 0x02 |
 
-## Typedefinition String
+## Typedefinition String: string, string-tiny, string-short
 
-a long-string. 32bit size-prefixed UTF-8 string
+size-prefixed UTF-8 string
 
 | Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| default | 0x30 (48) | long-string | 0 | y | default value
+| default | 0x30 (48) | string (-tiny, -short) | 0 - | y | default value
 
 
 ## Typedefinition Color: RGB, RGBA
@@ -263,7 +263,7 @@ Blue: 0x00 0x00 0xFF 0xFF
 | Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | default | 0x30 (48) | enum | 0 | y | default value
-| entries | 0x31 (49) | uint16 number followed by <number> tiny-strings | 0 | y | list of enumerations
+| entries | 0x31 (49) | uint16 number followed by <number> string-tiny | 0 | y | list of enumerations
 
 
 ## Typedefinition fixed Array
@@ -346,7 +346,7 @@ to optimize the update of the value of a parameter, there is a specialized updat
 | command       | 0x06         | uint8          | -               | n | updateValue command
 | parameter id  |              | uint32          | 0               | n | parameter id
 | type id       |              | uint8          | 0               | n | type-id
-| value       |          | type of type-id          | ?               | n | the value
+| value         |              | type of type-id  | ?               | n | the value
 
 this reduces the amount of data to be sent for a simple value udpate.
 
