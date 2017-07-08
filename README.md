@@ -260,8 +260,6 @@ Blue: 0x00 0x00 0xFF 0xFF
 
 ## Typedefinition Enum
 
-TODO: clearify: alternative being comma-separated string for enum entries
-
 | Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | default | 0x30 (48) | enum | 0 | y | default value
