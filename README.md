@@ -4,6 +4,7 @@ Totally Optional Interface
 A binary data-format definition to describe data values and user interface elements.
 It is intended to expose parameters (values) from a host application to a client in a defined way. It was created with UI clients in mind which update values at the host application. It can also be used in a non-UI case.
 
+https://github.com/i-n-g-o/TOI/wiki/F.A.Q.
 
 ## TOI Levels:
 - __Value__: Number, String, Color, … This is the value without visual representation
