@@ -44,7 +44,7 @@ of interest. use a:
 
 ## Package
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+| Name          | ID hex/dec   | Value           | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | **command** | - | uint8 | - | n | command of package |
 | id | 0x10(16) | uint32 | 0 | y | optional packet id |
@@ -73,7 +73,7 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 
 ## Meta Data
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | **version** | 0x1a	(26) | tiny-string | "" | n | semver
 | **capabilities** | 0x1b (27) | 1-byte | 1 | n | capbility of TOI
@@ -95,7 +95,7 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 
 ## Parameter:
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | **id** | - | uint32 | 0 | n | unique identifier
 | **type** |	- | TypeDefinition | - | n | typedefinition of value
@@ -119,10 +119,9 @@ A ParameterGroup allows to structure your parameters and can be used to discover
 ## Typedefinition:
 
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | **type-id** | - |  uint8 (see type-table) | 0x2f | n | type of value
-| default | 0x30 (48) | defined by type-id | depending on type | y | default data
 | ... type options... | | ||||
 | **terminator** | 0 | uint8 | 0 | n | terminator
 
@@ -170,12 +169,13 @@ A ParameterGroup allows to structure your parameters and can be used to discover
 | BGRA8 | 0x34 (52) |
 | ABGR8 | 0x35 (53) |
 | Enum | 0x36 (54) |
-| Array | 0x37 (55) |
-| Dict/Map | 0x38 (56) |
-| Image | 0x39 (57) | ? |
-| BANG | 0x3a (58) | 0 |
-| timetag | 0x3b (59) | 8 |
-| group | 0x3c (60) | 0 |
+| fixed Array | 0x37 (55) |
+| dynamic Array | 0x36 (56) |
+| Dict/Map | 0x39 (57) |
+| Image | 0x3a (58) | ? |
+| BANG | 0x3b (59) | 0 |
+| timetag | 0x3c (60) | 8 |
+| group | 0x3d (61) | 0 |
 | bin8? | |
 | bin16? | |
 | bin32? | |
@@ -188,17 +188,25 @@ uint8 value:
 - 0 == false
 - bigger than 0 == true
 
-## Typedefinition Number (uint8, int8, uint16, int16, ...):
-
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
+| default | 0x30 (48) | uint8 | 0 | y | default value
+
+
+## Typedefinition Numbers: uint8, int8, uint16, int16, ...
+
+see type-table for all number-types.
+
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
+| --------------|--------------|----------------|-----------------|------------|---------------|
+| default | 0x30 (48) | of type | 0 | y | default value
 | min | 0x31 (49) | of type | 0 | y | min value
 | max | 0x32 (50) | of type | 0 | y | max value
 | multipleof | 0x33 (51) | of type | 0 | y | multiple of value
 | scale | 0x34 (52) | uint8 | 0 | < | one of these (0x00, 0x01, 0x02)
 | unit | 0x35 (53) | tiny-string | "" | y | the unit of value
 
-## Typedefinition Vector (Vector2f32, Vector2i8, Vector4f32, ...):
+## Typedefinition Vector: Vector2f32, Vector2i8, Vector4f32, ...
 
 VectorXY
 
@@ -206,11 +214,14 @@ where X specifies the size
 
 where Y specifies the type
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+see type-table for a full list of available Vector-types.
+
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| min | 0x31 (49) | X times type | 0 | y | min value
-| max | 0x32 (50) | X times type | 0 | y | max value
-| multipleof | 0x33 (51) | X times type | 0 | y | multiple of value
+| default | 0x30 (48) | X times Y | 0 | y | default value
+| min | 0x31 (49) | X times Y | 0 | y | min value
+| max | 0x32 (50) | X times Y | 0 | y | max value
+| multipleof | 0x33 (51) | X times Y | 0 | y | multiple of value
 | scale | 0x34 (52) | uint8 | 0 | < | one of these (0x00, 0x01, 0x02)
 | unit | 0x35 (53) | tiny-string | "" | y | the unit of value
 
@@ -226,28 +237,55 @@ where Y specifies the type
 
 a long-string. 32bit size-prefixed UTF-8 string
 
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
+| --------------|--------------|----------------|-----------------|------------|---------------|
+| default | 0x30 (48) | long-string | 0 | y | default value
+
 ## Typedefinition Color
 
 RGB8, RGBA8, ARGB8, BGR8, BGRA8, ABGR8: no additional options.
 
 TODO: specify what channel is where
 
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
+| --------------|--------------|----------------|-----------------|------------|---------------|
+| default | 0x30 (48) | uint32 | 0 | y | default value
+
+
 ## Typedefinition Enum
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+TODO: clearify: alternative being comma-separated string for enum entries
+
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
+| default | 0x30 (48) | enum | 0 | y | default value
 | entries | 0x31 (49) | uint16 number followed by <number> tiny-strings | 0 | y | list of enumerations
 
-## Typedefinition Array
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+## Typedefinition fixed Array
+
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
-| subtype | 0x31(49) | TypeDefinition | StringType | y | TypeDefintion of array elements
+| **subtype** | - | TypeDefinition | StringType | n | TypeDefintion of array elements
+| **length** | - | uint32 | 0 | n | length of fixed array
+| default | 0x30 (48) | fixed array of subtype | 0 | y | default value
+
+
+## Typedefinition dynamic Array
+
+length-prefixed values of subtype.
+
+e.g.: <length uint32> value value value
+
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
+| --------------|--------------|----------------|-----------------|------------|---------------|
+| **subtype** | - | TypeDefinition | StringType | n | TypeDefintion of array elements
+| default | 0x30 (48) | dynamic array of subtype | 0 | y | default value
 
 
 ## Widget (0x24):
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | type | 0x50 (80) | uint16 | text input | y | type of widget.  see widget type-table
 | enabled | 0x51 (81) | uint8 | true | y | if widget allows user input
@@ -289,7 +327,7 @@ TODO: specify what channel is where
 
 to optimize the update of the value of a parameter, there is a specialized updateValue command in the form:
 
-| Name          | ID hex/dec   | Type           | default value   | optional   | description   |
+| Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | command       | 0x06         | uint8          | -               | n | updateValue command
 | parameter id  |              | uint32          | 0               | n | parameter id
