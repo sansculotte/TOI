@@ -3,11 +3,8 @@ package com.io.toi.model;
 import com.io.toi.model.ICommands.Add;
 import com.io.toi.model.ICommands.Remove;
 import com.io.toi.model.ToiTypes.Command;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
-import com.io.toi.model.exceptions.ToiUnsupportedFeatureException;
-import io.kaitai.struct.KaitaiStream;
 
-public class TOUIClient extends TOUIBase {
+public class ToiClient extends ToiBase {
 
     // callback objects
     private Add addListener;
@@ -16,7 +13,7 @@ public class TOUIClient extends TOUIBase {
 
     //------------------------------------------------------------
     //
-    public TOUIClient(final ITransporter _trans) {
+    public ToiClient(final ITransporter _trans) {
 
         super(_trans);
     }

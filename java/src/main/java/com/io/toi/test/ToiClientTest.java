@@ -13,14 +13,14 @@ import java.util.Map;
 /**
  * Created by inx on 29/11/16.
  */
-public class TOUIClientTest implements Add, Remove, Update {
+public class ToiClientTest implements Add, Remove, Update {
 
     //------------------------------------------------------------
     //
     public static void main(final String[] args) {
 
         try {
-            final TOUIClientTest test = new TOUIClientTest();
+            final ToiClientTest test = new ToiClientTest();
 
             while (true) {
 
@@ -43,11 +43,11 @@ public class TOUIClientTest implements Add, Remove, Update {
 
     //------------------------------------------------------------
     //
-    private final TOUIClient toui;
+    private final ToiClient toui;
 
     //------------------------------------------------------------
     //
-    public TOUIClientTest() throws IOException, URISyntaxException, InterruptedException {
+    public ToiClientTest() throws IOException, URISyntaxException, InterruptedException {
 
         // create serializer and transporter
 //        final UDPClientTransporter transporter = new UDPClientTransporter("localhost", 8888);
@@ -57,7 +57,7 @@ public class TOUIClientTest implements Add, Remove, Update {
 
 
         // create toi
-        toui = new TOUIClient(transporter);
+        toui = new ToiClient(transporter);
         toui.setUpdateListener(this);
         toui.setAddListener(this);
         toui.setRemoveListener(this);

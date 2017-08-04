@@ -22,10 +22,10 @@ import io.netty.handler.codec.MessageToMessageEncoder;
 
 import java.util.List;
 
-public class TOUIPacketEncoder extends MessageToMessageEncoder<ToiPacket> {
+public class ToiPacketEncoder extends MessageToMessageEncoder<ToiPacket> {
 
 
-    public TOUIPacketEncoder() {
+    public ToiPacketEncoder() {
     }
 
     @Override

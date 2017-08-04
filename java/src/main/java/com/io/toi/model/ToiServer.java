@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Created by inx on 30/11/16.
  */
-public class TOUIServer extends TOUIBase {
+public class ToiServer extends ToiBase {
 
     //------------------------------------------------------------
     // callback objects
@@ -16,7 +16,7 @@ public class TOUIServer extends TOUIBase {
 
     //------------------------------------------------------------
     //
-    public TOUIServer(final ITransporter _trans) {
+    public ToiServer(final ITransporter _trans) {
 
         super(_trans);
     }

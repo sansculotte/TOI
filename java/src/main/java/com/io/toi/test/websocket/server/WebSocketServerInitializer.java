@@ -67,15 +67,15 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
             }
         });
 
-        pipeline.addLast(new TOUIPacketDecoder());
-        pipeline.addLast(new TOUIPacketHandler(listener));
+        pipeline.addLast(new ToiPacketDecoder());
+        pipeline.addLast(new ToiPacketHandler(listener));
 
 
         // encoder
         pipeline.addLast(new BinaryWebSocketFrameEncoder());
         pipeline.addLast(new StringTextWebSocketFrameEncoder());
         pipeline.addLast(new ByteArrayTextWebSocketFrameEncoder());
-        pipeline.addLast(new TOUIPacketEncoder());
+        pipeline.addLast(new ToiPacketEncoder());
     }
 
 }

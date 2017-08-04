@@ -26,9 +26,9 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
 
-public class TOUIPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
+public class ToiPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
-    public TOUIPacketDecoder() {
+    public ToiPacketDecoder() {
     }
 
     @Override

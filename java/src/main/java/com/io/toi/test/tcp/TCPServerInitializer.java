@@ -23,10 +23,10 @@ public class TCPServerInitializer extends ChannelInitializer<SocketChannel> {
         // TODO.... no JSON here..
         // TODO: we need a streaming decoder here
         pipeline.addLast(new JsonObjectDecoder()); // default 1024 x 1024
-        pipeline.addLast(new TOUIPacketDecoder());
-        pipeline.addLast(new TOUIPacketHandler(server));
+        pipeline.addLast(new ToiPacketDecoder());
+        pipeline.addLast(new ToiPacketHandler(server));
 
-        pipeline.addLast(new TOUIPacketEncoder());
+        pipeline.addLast(new ToiPacketEncoder());
     }
 
 }

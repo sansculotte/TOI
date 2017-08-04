@@ -8,9 +8,8 @@ import com.io.toi.test.websocket.server.WebsocketServerTransporterNetty;
 
 import java.io.*;
 import java.security.cert.CertificateException;
-import java.util.Scanner;
 
-public class TOUIServerTest implements Update, Init {
+public class ToiServerTest implements Update, Init {
 
     public static boolean doAutoUpdate = false;
 
@@ -19,7 +18,7 @@ public class TOUIServerTest implements Update, Init {
     public static void main(final String[] args) {
 
         try {
-            final TOUIServerTest test = new TOUIServerTest();
+            final ToiServerTest test = new ToiServerTest();
 
             if (doAutoUpdate) {
 
@@ -51,7 +50,7 @@ public class TOUIServerTest implements Update, Init {
 
     //------------------------------------------------------------
     //
-    private final TOUIServer toi;
+    private final ToiServer toi;
 
     private final ToiParameter<String> theValueString;
 
@@ -67,7 +66,7 @@ public class TOUIServerTest implements Update, Init {
 
     //------------------------------------------------------------
     //
-    public TOUIServerTest() throws IOException, CertificateException, InterruptedException {
+    public ToiServerTest() throws IOException, CertificateException, InterruptedException {
 
 
         // a udp transporter
@@ -82,7 +81,7 @@ public class TOUIServerTest implements Update, Init {
                 (10000);
 
         // create toi
-        toi = new TOUIServer(transporter);
+        toi = new ToiServer(transporter);
         toi.setUpdateListener(this);
         toi.setInitListener(this);
 

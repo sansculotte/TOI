@@ -69,7 +69,7 @@ public class WebsocketClientTransporter implements ITransporter {
                          pipeline.addLast(new BinaryWebSocketFrameEncoder());
                          pipeline.addLast(new StringTextWebSocketFrameEncoder());
                          pipeline.addLast(new ByteArrayTextWebSocketFrameEncoder());
-                         pipeline.addLast(new TOUIPacketEncoder());
+                         pipeline.addLast(new ToiPacketEncoder());
 
                      }
                  });

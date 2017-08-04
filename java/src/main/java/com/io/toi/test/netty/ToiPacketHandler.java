@@ -19,11 +19,11 @@ import com.io.toi.model.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class TOUIPacketHandler extends SimpleChannelInboundHandler<ToiPacket> {
+public class ToiPacketHandler extends SimpleChannelInboundHandler<ToiPacket> {
 
     private final ITransporterNetty listener;
 
-    public TOUIPacketHandler(final ITransporterNetty _listener) {
+    public ToiPacketHandler(final ITransporterNetty _listener) {
         listener = _listener;
     }
 

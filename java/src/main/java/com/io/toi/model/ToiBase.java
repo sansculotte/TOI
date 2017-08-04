@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by inx on 30/11/16.
  */
-public abstract class TOUIBase implements ITransporterListener {
+public abstract class ToiBase implements ITransporterListener {
 
     //------------------------------------------------------------
     //
@@ -26,7 +26,7 @@ public abstract class TOUIBase implements ITransporterListener {
 
     //------------------------------------------------------------
     //
-    public TOUIBase(final ITransporter _trans) {
+    public ToiBase(final ITransporter _trans) {
 
         _setTransporter(_trans);
     }
