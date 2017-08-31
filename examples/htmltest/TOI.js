@@ -511,7 +511,7 @@ TOISocket.prototype.open = function(address, port, ssl) {
     this.address = "ws://" + address + ":" + port;
   }
 
-  this.webSocket = new window.WebSocket(this.address, ["TOI"]);
+  this.webSocket = new window.WebSocket(this.address);
   this.webSocket.binaryType = "arraybuffer";
   this.webSocket._ = this;
 
