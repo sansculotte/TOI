@@ -25,6 +25,12 @@ dependencies {
 }
 
 
+task runServer(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "com.io.toi.test.ToiServerTest"
+}
+
+
 task wrapper(type: Wrapper) {
     gradleVersion = '3.1'
 }
