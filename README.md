@@ -60,7 +60,7 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 | command   | ID   | expected data | comment   |
 |-----------|------|---------------|-----------|
 | version | 0x01 | Meta Data |
-| init | 0x02 | - / Paramter | if no data is sent: request for all parameters, if a paramter is sent: request for one parameter
+| init | 0x02 | - / Parameter | if no data is sent: request for all parameters, if a paramter is sent: request for one parameter
 | add | 0x03 | Parameter |
 | update | 0x04 |	Parameter
 | remove | 0x05 | Parameter
@@ -77,7 +77,7 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 | Name          | ID hex/dec   | ValueType      | default value   | optional   | description   |
 | --------------|--------------|----------------|-----------------|------------|---------------|
 | **version** | 0x1a	(26) | tiny-string | "" | n | semver
-| **capabilities** | 0x1b (27) | 1-byte | 1 | n | capbility of TOI
+| **capabilities** | 0x1b (27) | 1-byte | 1 | n | capabilities of TOI
 | **commands** | 0x1c (28) | 1-byte | 0 | n | (max 8 commands enough?) |
 | **terminator** | 0 | 1 byte | 0 | n | terminator
 
@@ -112,9 +112,9 @@ note: we may want to send id/timestamp before the data, to decide if packet is v
 
 ## ParameterGroup:
 
-A ParameterGroup is a Parameter without value/dfaultValue and a fixed TypeDefintion (group).
+A ParameterGroup is a Parameter without value/defaultValue and a fixed TypeDefintion (group).
 
-A ParameterGroup allows to structure your parameters and can be used to discover parameter on different levels.
+A ParameterGroup allows to structure your parameters and can be used to discover parameters on different levels.
 
 
 ## Typedefinition:
