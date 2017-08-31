@@ -28,10 +28,7 @@ public class ToiServerTest implements Update, Init {
                     while (!Thread.interrupted()) {
 
                         try {
-                            Thread.sleep(300);
-                            test.updateVar1();
-
-                            Thread.sleep(200);
+                            Thread.sleep(500);
                             test.updateVar2();
                         }
                         catch (final InterruptedException _e) {
