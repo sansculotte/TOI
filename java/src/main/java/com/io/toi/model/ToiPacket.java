@@ -2,7 +2,7 @@ package com.io.toi.model;
 
 import com.io.toi.model.ToiTypes.Command;
 import com.io.toi.model.ToiTypes.Packet;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import com.io.toi.model.exceptions.ToiUnsupportedFeatureException;
 import io.kaitai.struct.KaitaiStream;
 
@@ -27,12 +27,12 @@ public class ToiPacket implements ToiWritable {
 
     public static ToiPacket parse(final KaitaiStream _io) throws
                                                           ToiUnsupportedFeatureException,
-                                                          ToiDataErrorExcpetion {
+                                                          ToiDataErrorException {
 
         final Command cmd = Command.byId(_io.readU1());
 
         if (cmd == null) {
-            throw new ToiDataErrorExcpetion();
+            throw new ToiDataErrorException();
         }
 
         final ToiPacket packet = new ToiPacket(cmd);
@@ -51,20 +51,20 @@ public class ToiPacket implements ToiWritable {
 
             if (dataid == null) {
                 // wrong data id... skip whole packet?
-                throw new ToiDataErrorExcpetion();
+                throw new ToiDataErrorException();
             }
 
             switch (dataid) {
                 case DATA:
 
                     if (packet.getData() != null) {
-                        throw new ToiDataErrorExcpetion();
+                        throw new ToiDataErrorException();
                     }
 
                     switch (cmd) {
                         case INIT:
                             // init - shout not happen
-                            throw new ToiDataErrorExcpetion();
+                            throw new ToiDataErrorException();
 
                         case ADD:
                         case REMOVE:
@@ -87,7 +87,7 @@ public class ToiPacket implements ToiWritable {
                     packet.setTimestamp(_io.readU8be());
                     break;
                 default:
-                    throw new ToiDataErrorExcpetion();
+                    throw new ToiDataErrorException();
             }
 
         }

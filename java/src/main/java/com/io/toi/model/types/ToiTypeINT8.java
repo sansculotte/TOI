@@ -2,7 +2,7 @@ package com.io.toi.model.types;
 
 import com.io.toi.model.ToiTypeDefinition;
 import com.io.toi.model.ToiTypes.*;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import io.kaitai.struct.KaitaiStream;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.OutputStream;
  */
 public class ToiTypeINT8 extends ToiTypeNumber<Byte> {
 
-    public static ToiTypeINT8 parse(final KaitaiStream _io) throws ToiDataErrorExcpetion {
+    public static ToiTypeINT8 parse(final KaitaiStream _io) throws ToiDataErrorException {
 
         final ToiTypeINT8 type = new ToiTypeINT8();
 
@@ -30,7 +30,7 @@ public class ToiTypeINT8 extends ToiTypeNumber<Byte> {
             final TypeNumber dataid = TypeNumber.byId(did);
 
             if (dataid == null) {
-                throw new ToiDataErrorExcpetion();
+                throw new ToiDataErrorException();
             }
 
             switch (dataid) {

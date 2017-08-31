@@ -2,7 +2,7 @@ package com.io.toi.model.types;
 
 import com.io.toi.model.ToiTypeDefinition;
 import com.io.toi.model.ToiTypes.*;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import io.kaitai.struct.KaitaiStream;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.io.OutputStream;
 
 public class ToiTypeBOOL extends ToiTypeDefinition<Boolean> {
 
-    public static ToiTypeBOOL parse(final KaitaiStream _io) throws ToiDataErrorExcpetion {
+    public static ToiTypeBOOL parse(final KaitaiStream _io) throws ToiDataErrorException {
 
         final ToiTypeBOOL type = new ToiTypeBOOL();
 
@@ -27,7 +27,7 @@ public class ToiTypeBOOL extends ToiTypeDefinition<Boolean> {
             final TypeDefinition dataid = TypeDefinition.byId(did);
 
             if (dataid == null) {
-                throw new ToiDataErrorExcpetion();
+                throw new ToiDataErrorException();
             }
 
             switch (dataid) {
@@ -37,7 +37,7 @@ public class ToiTypeBOOL extends ToiTypeDefinition<Boolean> {
                     break;
 
                 default:
-                    throw new ToiDataErrorExcpetion();
+                    throw new ToiDataErrorException();
             }
 
         }

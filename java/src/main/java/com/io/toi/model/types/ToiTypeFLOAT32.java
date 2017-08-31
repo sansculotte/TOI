@@ -2,7 +2,7 @@ package com.io.toi.model.types;
 
 import com.io.toi.model.ToiTypeDefinition;
 import com.io.toi.model.ToiTypes.*;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import io.kaitai.struct.KaitaiStream;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.nio.ByteBuffer;
  */
 public class ToiTypeFLOAT32 extends ToiTypeNumber<Float> {
 
-    public static ToiTypeFLOAT32 parse(final KaitaiStream _io) throws ToiDataErrorExcpetion {
+    public static ToiTypeFLOAT32 parse(final KaitaiStream _io) throws ToiDataErrorException {
 
         final ToiTypeFLOAT32 type = new ToiTypeFLOAT32();
 
@@ -31,7 +31,7 @@ public class ToiTypeFLOAT32 extends ToiTypeNumber<Float> {
             final TypeNumber dataid = TypeNumber.byId(did);
 
             if (dataid == null) {
-                throw new ToiDataErrorExcpetion();
+                throw new ToiDataErrorException();
             }
 
             switch (dataid) {

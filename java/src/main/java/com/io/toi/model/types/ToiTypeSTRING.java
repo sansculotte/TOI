@@ -6,7 +6,7 @@ import com.io.toi.model.ToiTypes.Datatype;
 import com.io.toi.model.ToiTypes.Packet;
 import com.io.toi.model.ToiTypes.TypeDefinition;
 import io.kaitai.struct.KaitaiStream;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,7 +16,7 @@ import java.io.OutputStream;
  */
 public class ToiTypeSTRING extends ToiTypeDefinition<String> {
 
-    public static ToiTypeSTRING parse(final KaitaiStream _io) throws ToiDataErrorExcpetion {
+    public static ToiTypeSTRING parse(final KaitaiStream _io) throws ToiDataErrorException {
 
         final ToiTypeSTRING type = new ToiTypeSTRING();
 
@@ -37,7 +37,7 @@ public class ToiTypeSTRING extends ToiTypeDefinition<String> {
                     break;
 
                 default:
-                    throw new ToiDataErrorExcpetion();
+                    throw new ToiDataErrorException();
             }
 
         }

@@ -1,7 +1,7 @@
 package com.io.toi.test.udp;
 
 import com.io.toi.model.*;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import com.io.toi.model.exceptions.ToiUnsupportedFeatureException;
 import io.kaitai.struct.KaitaiStream;
 
@@ -65,7 +65,7 @@ public class UDPClientTransporter extends Thread implements ITransporter {
 
                     received(toiPacket);
                 }
-                catch (ToiUnsupportedFeatureException | ToiDataErrorExcpetion _e) {
+                catch (ToiUnsupportedFeatureException | ToiDataErrorException _e) {
                     _e.printStackTrace();
                 }
 

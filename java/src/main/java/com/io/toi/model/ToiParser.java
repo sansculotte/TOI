@@ -1,7 +1,7 @@
 package com.io.toi.model;
 
 import com.io.toi.model.ToiTypes.Command;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import com.io.toi.model.exceptions.ToiUnsupportedFeatureException;
 import com.io.toi.model.types.ToiTypeINT16;
 import io.kaitai.struct.KaitaiStream;
@@ -59,7 +59,7 @@ public class ToiParser {
     public static ToiPacket fromFile(final String fileName) throws
                                                             IOException,
                                                             ToiUnsupportedFeatureException,
-                                                            ToiDataErrorExcpetion {
+                                                            ToiDataErrorException {
 
         final KaitaiStream _io = new KaitaiStream(fileName);
 
@@ -120,7 +120,7 @@ public class ToiParser {
             }
 
         }
-        catch (IOException | ToiDataErrorExcpetion | ToiUnsupportedFeatureException _e) {
+        catch (IOException | ToiDataErrorException | ToiUnsupportedFeatureException _e) {
             _e.printStackTrace();
         }
 

@@ -1,7 +1,7 @@
 package com.io.toi.model;
 
 import com.io.toi.model.ToiTypes.*;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import com.io.toi.model.types.*;
 import io.kaitai.struct.KaitaiStream;
 
@@ -51,13 +51,13 @@ public abstract class ToiTypeDefinition<T> implements ToiWritable {
 //    }
 
     //------------------------------------------------------------
-    public static ToiTypeDefinition<?> parse(final KaitaiStream _io) throws ToiDataErrorExcpetion {
+    public static ToiTypeDefinition<?> parse(final KaitaiStream _io) throws ToiDataErrorException {
 
         // read mandatory type
         final Datatype typeid = Datatype.byId(_io.readU1());
 
         if (typeid == null) {
-            throw new ToiDataErrorExcpetion();
+            throw new ToiDataErrorException();
         }
 
         ToiTypeDefinition<?> type = null;
@@ -111,7 +111,7 @@ public abstract class ToiTypeDefinition<T> implements ToiWritable {
         }
 
         if (type == null) {
-            throw new ToiDataErrorExcpetion();
+            throw new ToiDataErrorException();
         }
 
         return type;

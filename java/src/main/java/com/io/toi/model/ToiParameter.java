@@ -1,7 +1,7 @@
 package com.io.toi.model;
 
 import com.io.toi.model.ToiTypes.*;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import com.io.toi.model.exceptions.ToiUnsupportedFeatureException;
 import io.kaitai.struct.KaitaiStream;
 
@@ -19,7 +19,7 @@ public class ToiParameter<T> implements ToiWritable {
     //
     public static ToiParameter<?> parse(final KaitaiStream _io) throws
                                                                 ToiUnsupportedFeatureException,
-                                                                ToiDataErrorExcpetion {
+                                                                ToiDataErrorException {
 
         // get mandatory id
         final int paramId = _io.readS4be();

@@ -3,7 +3,7 @@ package com.io.toi.model.types;
 import com.io.toi.model.ToiParser;
 import com.io.toi.model.ToiTypeDefinition;
 import com.io.toi.model.ToiTypes.*;
-import com.io.toi.model.exceptions.ToiDataErrorExcpetion;
+import com.io.toi.model.exceptions.ToiDataErrorException;
 import io.kaitai.struct.KaitaiStream;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public abstract class ToiTypeNumber<T extends Number> extends ToiTypeDefinition<
     public static void parseOption(
             final ToiTypeNumber<?> _typedef,
             final TypeNumber _dataid,
-            final KaitaiStream _io) throws ToiDataErrorExcpetion {
+            final KaitaiStream _io) throws ToiDataErrorException {
 
         switch (_dataid) {
 
@@ -29,7 +29,7 @@ public abstract class ToiTypeNumber<T extends Number> extends ToiTypeDefinition<
 
             default:
                 // not a number data id!!
-                throw new ToiDataErrorExcpetion();
+                throw new ToiDataErrorException();
         }
     }
 
